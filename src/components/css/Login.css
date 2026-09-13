@@ -1,0 +1,193 @@
+/* Premium Glassmorphism Login */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 10% 20%, rgb(33, 33, 44) 0%, rgb(18, 18, 25) 90%);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #fff;
+  /* Ensure it fills the screen even if there's global margin/padding */
+  margin: -8px; /* Counteract default body margin if not reset globally */
+}
+
+/* Background animated orbs for a premium dynamic feel */
+.login-container::before,
+.login-container::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  z-index: 0;
+  animation: floatOrb 12s infinite alternate ease-in-out;
+}
+
+.login-container::before {
+  width: 450px;
+  height: 450px;
+  background: rgba(99, 102, 241, 0.25); /* Indigo */
+  top: -150px;
+  left: -150px;
+}
+
+.login-container::after {
+  width: 350px;
+  height: 350px;
+  background: rgba(236, 72, 153, 0.2); /* Pink */
+  bottom: -100px;
+  right: -100px;
+  animation-delay: -6s;
+  animation-duration: 15s;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, 60px) scale(1.1); }
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 48px 40px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  margin: 20px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.login-header h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, #ffffff 0%, #a5a5b0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.login-header p {
+  font-size: 0.95rem;
+  color: #a1a1aa;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Targeting the div wrappers from Common.jsx */
+.input-group > div {
+  width: 100%;
+}
+
+.input-group input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 18px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-group input::placeholder {
+  color: #6b7280;
+}
+
+.input-group input:focus {
+  border-color: rgba(99, 102, 241, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+.login-btn-wrapper > div {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.login-btn-wrapper button {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.4);
+  letter-spacing: 0.01em;
+}
+
+.login-btn-wrapper button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(168, 85, 247, 0.6);
+  filter: brightness(1.1);
+}
+
+.login-btn-wrapper button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 15px -5px rgba(168, 85, 247, 0.4);
+}
+
+/* PIN Input Styles */
+.pin-group-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pin-label {
+  font-size: 0.95rem;
+  color: #a1a1aa;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.pin-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pin-box {
+  width: 100%;
+  aspect-ratio: 1; /* Makes them perfectly square */
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pin-box:focus {
+  border-color: rgba(99, 102, 241, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
