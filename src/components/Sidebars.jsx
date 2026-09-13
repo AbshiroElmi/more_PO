@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import menuIcon from "../assets/images/menu.png";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { Btn } from "./Common.jsx";
 
 function Sidebars() {
     return (
@@ -33,7 +33,7 @@ function Sidebars() {
 
                 {/* footer in sidebar */}
                 <div className="footer">
-                    <p>Log Out</p>
+                    <Btn text="Log Out"  />
                 </div>
             </div>
         </>
