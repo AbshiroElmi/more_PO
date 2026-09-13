@@ -1,0 +1,43 @@
+import { NavLink } from "react-router-dom";
+import menuIcon from "../assets/images/menu.png";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
+function Sidebars() {
+    return (
+        <>
+            <div className="sidebar" >
+                <header className="header">
+                    <div className="img1">
+                        <img src={menuIcon} alt="menu" />
+                    </div>
+                    <div className="img2">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </div>
+                    {/* menu icon */}
+
+                </header>
+                <ul>
+                    <li>
+                        <NavLink to="/home">Home</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/items">Items</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/category">Category</NavLink>
+                    </li>
+                </ul>
+
+
+                {/* footer in sidebar */}
+                <div className="footer">
+                    <p>Log Out</p>
+                </div>
+            </div>
+        </>
+    );
+}
+
+export default Sidebars;
