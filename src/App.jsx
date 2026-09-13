@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Sidebars from "./components/Sidebars.jsx";
-import Home from "./components/pages/Home.jsx";
-import Items from "./components/pages/Items.jsx";
-import Category from "./components/pages/Category.jsx";
+import Apartments from "./components/pages/Apartments.jsx";
+import Houses from "./components/pages/Houses.jsx";
+import Category from "./components/pages/Dashoard.jsx";
 import "./components/css/SidebarCss.css";
 function App() {
   return (
@@ -11,11 +11,10 @@ function App() {
         <Sidebars />
         <div style={{ flex: 1, padding: "16px" }}>
           <Routes>
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="/home" element={<Home/>} />
-            <Route path="/items" element={<Items />} />
-            <Route path="/category" element={<Category />} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
+            <Route path="/dashboard" element={<Category />} />
+            <Route path="/apartments" element={<Apartments />} />
+            <Route path="/houses" element={<Houses />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>
       </div>

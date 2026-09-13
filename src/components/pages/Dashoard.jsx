@@ -10,6 +10,7 @@ const categories = [
     { id: 7,  icon: "🧾", label: "Receipts"    },
     { id: 8,  icon: "🔑", label: "Renting"     },
     { id: 9,  icon: "🛡️", label: "Users"       },
+    
 ];
 
 function Category() {
@@ -21,7 +22,10 @@ function Category() {
                 <div
                     key={cat.id}
                     className={`cat${active === cat.id ? " active-cat" : ""}`}
-                    onClick={() => setActive(cat.id === active ? null : cat.id)}
+                    onClick={() => {
+                        setActive(cat.id === active ? null : cat.id)
+                       
+                    }}
                 >
                     <span className="cat-icon">{cat.icon}</span>
                     <p>{cat.label}</p>

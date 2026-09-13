@@ -12,22 +12,23 @@ function Sidebars() {
                     <div className="img1">
                         <img src={menuIcon} alt="menu" />
                     </div>
-                    <div className="img2">
+                    {/* <div className="img2">
                         <FontAwesomeIcon icon={faSearch} />
-                    </div>
+                    </div> */}
                     {/* menu icon */}
 
                 </header>
                 <ul>
                     <li>
-                        <NavLink to="/home">Home</NavLink>
+                        <NavLink to="/dashboard">Dashboard</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/items">Items</NavLink>
+                        <NavLink to="/apartments">Apartments</NavLink>
                     </li>
                     <li>
-                        <NavLink to="/category">Category</NavLink>
+                        <NavLink to="/houses">Houses</NavLink>
                     </li>
+               
                 </ul>
 
 
