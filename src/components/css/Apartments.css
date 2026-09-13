@@ -1,0 +1,161 @@
+/* ─── Apartments Page ────────────────────────────────────────── */
+.apartments-page {
+    font-family: 'Inter', sans-serif;
+    padding: 24px 28px;
+    min-height: 100vh;
+    background: #fff;
+}
+
+/* Header */
+.apartments-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.apartments-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.apartments-header h1 span.page-icon {
+    font-size: 26px;
+}
+
+.apartments-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6c63ff;
+    background: rgba(108, 99, 255, 0.1);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+}
+
+/* Table wrapper */
+.table-wrapper {
+    overflow: hidden;
+}
+
+/* Table */
+.apt-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.apt-table thead {
+    background: linear-gradient(90deg, #1a1a2e 0%, #2d2b55 100%);
+}
+
+.apt-table thead th {
+    padding: 14px 18px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    white-space: nowrap;
+}
+
+.apt-table thead th:first-child {
+    border-radius: 0;
+}
+
+/* Rows */
+.apt-table tbody tr {
+    border-bottom: 1px solid #f0f0f7;
+    transition: background 0.15s ease;
+    cursor: default;
+}
+
+.apt-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.apt-table tbody tr:hover {
+    background: #f3f1ff;
+}
+
+.apt-table tbody td {
+    padding: 13px 18px;
+    font-size: 13.5px;
+    color: #333;
+    vertical-align: middle;
+}
+
+/* # column */
+.apt-table .col-no {
+    font-weight: 700;
+    color: #6c63ff;
+    font-size: 13px;
+    width: 50px;
+}
+
+/* App name */
+.apt-table .col-name {
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+/* h_no badge */
+.h-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: rgba(108, 99, 255, 0.12);
+    color: #6c63ff;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+/* rooms / toilets pills */
+.stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #444;
+    background: #f5f5fb;
+    border: 1px solid #e8e8f0;
+    border-radius: 20px;
+    padding: 3px 10px;
+    white-space: nowrap;
+}
+
+/* description */
+.apt-table .col-desc {
+    color: #666;
+    font-size: 12.5px;
+    max-width: 260px;
+}
+
+/* Status badge */
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.available {
+    background: #e6f6ee;
+    color: #009951;
+}
+
+.status-badge.occupied {
+    background: #fbeef1;
+    color: #e02d4b;
+}

@@ -13,7 +13,7 @@ const categories = [
     
 ];
 
-function Category() {
+function Dashboard() {
     const [active, setActive] = useState(null);
 
     return (
@@ -36,4 +36,4 @@ function Category() {
 }
 
 
-export default Category;
+export default Dashboard;
