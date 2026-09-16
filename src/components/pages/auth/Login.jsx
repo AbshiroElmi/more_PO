@@ -13,11 +13,9 @@ function Login() {
 
         if (!username && !password) return;
 
-        // Perform login action
-        console.log("Logging in with", username, password);
         if (username === "admin" && password === "2026") {
-
-            navigate("/dashboard");
+            localStorage.setItem("isAuthenticated", "true");
+             navigate("/sidebars");
         } else {
             setUsername("");
             setPassword("");

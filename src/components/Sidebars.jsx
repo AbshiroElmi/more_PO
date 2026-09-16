@@ -1,10 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import menuIcon from "../assets/images/menu.png";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Btn } from "./Common.jsx";
 
 function Sidebars() {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("isAuthenticated");
+        navigate("/login");
+    };
+
     return (
         <>
             <div className="sidebar" >
@@ -28,13 +35,13 @@ function Sidebars() {
                     <li>
                         <NavLink to="/houses">Houses</NavLink>
                     </li>
-               
+
                 </ul>
 
 
                 {/* footer in sidebar */}
                 <div className="footer">
-                    <Btn text="Log Out"  />
+                    <Btn text="Log Out" setMethod={handleLogout} />
                 </div>
             </div>
         </>

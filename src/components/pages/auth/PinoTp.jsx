@@ -10,21 +10,17 @@ function PinoTp() {
     const navigate = useNavigate();
 
     const handlePinChange = (index, value) => {
-        // Only allow numbers
         if (value && !/^[0-9]+$/.test(value)) return;
 
         const newPin = [...pin];
-        newPin[index] = value.slice(-1); // Only take the last character
+        newPin[index] = value.slice(-1);
         setPin(newPin);
-
-        // Auto-focus to next input
         if (value && index < 3) {
             inputRefs[index + 1].current.focus();
         }
     };
 
     const handleKeyDown = (index, e) => {
-        // Auto-focus to previous input on backspace if current is empty
         if (e.key === "Backspace" && !pin[index] && index > 0) {
             inputRefs[index - 1].current.focus();
         }
@@ -35,7 +31,8 @@ function PinoTp() {
         const fullPin = pin.join("");
         if (fullPin.length !== 4) return;
         else if (fullPin === "2026") {
-            navigate("/dashboard");
+            localStorage.setItem("isAuthenticated", "true");
+            navigate("/sidebars");
         } else {
             alert("Invalid PIN");
 
