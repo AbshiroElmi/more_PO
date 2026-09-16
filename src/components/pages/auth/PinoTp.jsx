@@ -34,7 +34,14 @@ function PinoTp() {
         if (e && e.preventDefault) e.preventDefault();
         const fullPin = pin.join("");
         if (fullPin.length !== 4) return;
+        else if (fullPin === "2026") {
+            navigate("/dashboard");
+        } else {
+            alert("Invalid PIN");
 
+            setPin(["", "", "", ""]);
+
+        }
         console.log("Logging in with:", fullPin);
     };
 
@@ -68,7 +75,7 @@ function PinoTp() {
                     </div>
 
                     <div className="login-btn-wrapper">
-                        <Btn text="Verify & Sign In" setMethod={save} />
+                        <Btn text="Sign In" setMethod={save} />
                     </div>
                     <a href="#" onClick={(e) => {
                         e.preventDefault();

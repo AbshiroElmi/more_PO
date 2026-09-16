@@ -10,10 +10,20 @@ function Login() {
 
     let save = (e) => {
         if (e && e.preventDefault) e.preventDefault();
+
         if (!username && !password) return;
 
         // Perform login action
         console.log("Logging in with", username, password);
+        if (username === "admin" && password === "2026") {
+
+            navigate("/dashboard");
+        } else {
+            setUsername("");
+            setPassword("");
+
+            alert("Invalid username or password");
+        }
     };
 
     return (

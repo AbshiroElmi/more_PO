@@ -13,20 +13,20 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/pinotp" element={<PinoTp />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/*" element={
+          <div style={{ display: "flex", marginLeft: "20%" }}>
+            <Sidebars />
+            <div style={{ flex: 1, padding: "16px" }}>
+              <Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/apartments" element={<Apartments />} />
+                <Route path="/houses" element={<Houses />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </Routes>
+            </div>
+          </div>
+        } />
       </Routes>
-    
-      {/* <div style={{ display: "flex", marginLeft: "20%" }}>
-        <Sidebars />
-        <div style={{ flex: 1, padding: "16px" }}>
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/apartments" element={<Apartments />} />
-            <Route path="/houses" element={<Houses />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </div>
-      </div> */}
     </BrowserRouter>
   );
 }
