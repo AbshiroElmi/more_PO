@@ -24,5 +24,21 @@ app.get("/appartments", (req, res) => {
   });
 });
 
+// Express route to create a new apartment
+app.post("/appartments", (req, res) => {
+  const sql = "INSERT INTO appartments (app_name, h_no, rooms, toilets, description) VALUES (?, ?, ?, ?, ?)";
+  const values = [
+    req.body.app_name,
+    req.body.h_no,
+    req.body.rooms,
+    req.body.toilets,
+    req.body.description
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Apartment added successfully!", id: data.insertId });
+  });
+});
+
 
 app.listen(5000)
