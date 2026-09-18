@@ -1,18 +1,34 @@
+import { useState, useEffect } from "react";
 import "../css/Apartments.css";
-const apartments = [
-    { app_no: 1,  app_name: "Flat 101 A",     h_no: 1, rooms: 3, toilets: 2, description: "Luxury 3-bedroom apartment in Taleex", status: "available" },
-    { app_no: 2,  app_name: "Flat 102 B",     h_no: 1, rooms: 2, toilets: 1, description: "Standard 2-bedroom apartment", status: "occupied" },
-    { app_no: 3,  app_name: "Suite 201",       h_no: 2, rooms: 4, toilets: 3, description: "Spacious family apartment near KPP", status: "available" },
-    { app_no: 4,  app_name: "Flat 301",        h_no: 3, rooms: 2, toilets: 2, description: "Modern apartment in Waberi", status: "available"    },
-    { app_no: 5,  app_name: "Studio A",        h_no: 4, rooms: 1, toilets: 1, description: "Single studio apartment with sea breeze", status: "available" },
-    { app_no: 6,  app_name: "Flat 1A",         h_no: 5, rooms: 3, toilets: 2, description: "Ground floor 3-bedroom apartment", status: "occupied" },
-    { app_no: 7,  app_name: "Flat 2B",         h_no: 6, rooms: 2, toilets: 1, description: "Newly renovated 2-bedroom unit", status: "available" },
-    { app_no: 8,  app_name: "Penthouse 501",   h_no: 7, rooms: 5, toilets: 4, description: "Executive penthouse unit at KM4", status: "occupied" },
-    { app_no: 9,  app_name: "Flat 103",        h_no: 8, rooms: 2, toilets: 2, description: "Cozy 2-bedroom unit in Shibis", status: "available" },
-    { app_no: 10, app_name: "Flat 202",        h_no: 9, rooms: 3, toilets: 2, description: "Spacious apartment near Ceel Gaab port area", status: "available" },
-];
 
 function Apartments() {
+    const [apartments, setApartments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/appartments")
+            .then(async res => {
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    console.error("API Error:", errData);
+                    throw new Error(errData.error || "Network response was not ok");
+                }
+                return res.json();
+            })
+            .then(data => {
+                setApartments(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <div className="apartments-page">Loading apartments...</div>;
+    if (error) return <div className="apartments-page">Error fetching apartments: {error}</div>;
+
     return (
         <div className="apartments-page">
            
