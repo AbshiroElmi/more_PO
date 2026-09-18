@@ -77,15 +77,15 @@ function Apartments() {
             <div className="table-wrapper">
                 <table className="apt-table">
                     <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>App Name</th>
-                            <th>House No.</th>
-                            <th>Rooms</th>
-                            <th>Toilets</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                        </tr>
+                    <tr>
+        {apartments.length > 0 && 
+            Object.keys(apartments[0]).map((key) => (
+                <th key={key}>
+                    {key.replace(/_/g, " ").toUpperCase()}
+                </th>
+            ))
+        }
+    </tr>
                     </thead>
                     <tbody>
                         {apartments.map((apt) => (
@@ -102,11 +102,7 @@ function Apartments() {
                                     <span className="stat-pill">🚿 {apt.toilets}</span>
                                 </td>
                                 <td className="col-desc">{apt.description}</td>
-                                <td>
-                                    <span className={`status-badge ${apt.status === "occupied" ? "occupied" : "available"}`}>
-                                        {apt.status}
-                                    </span>
-                                </td>
+                             
                             </tr>
                         ))}
                     </tbody>
