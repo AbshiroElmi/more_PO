@@ -11,7 +11,7 @@ import Receipts from "../../pages/Receipts.jsx";
 import Renting from "../../pages/Renting.jsx";
 import Users from "../../pages/Users.jsx";
 import Login from "./Login.jsx";
-import PinoTp from "./pinoTp.jsx";
+import PinoTp from "./PinoTp.jsx";
 import "../../css/SidebarCss.css";
 
 
@@ -41,7 +41,7 @@ function AppRoutes() {
                 <Route path="/pinotp" element={<AuthRoute><PinoTp /></AuthRoute>} />
                 <Route path="/*" element={
                     <ProtectedRoute>
-                        <div style={{ display: "flex", marginLeft: "20%" }}>
+                        <div style={{ display: "flex", marginLeft: "220px", minHeight: "100vh", background: "#f5f6fa" }}>
                             <Sidebars />
                             <div style={{ flex: 1, padding: "16px" }}>
                                 <Routes>

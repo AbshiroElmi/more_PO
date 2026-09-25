@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Common, { Btn } from "../../Common.jsx";
+import menuIcon from "../../../assets/images/menu.png";
 import "../../css/Login.css";
 
 function Login() {
@@ -26,6 +27,9 @@ function Login() {
 
             if (data.success) {
                 localStorage.setItem("isAuthenticated", "true");
+                const loggedInUser = data.user?.user_name || username || "Abshiro";
+                localStorage.setItem("username", loggedInUser);
+                localStorage.setItem("userEmail", "abshiro@gmail.com");
                 navigate("/dashboard");
             } else {
                 setUsername("");
@@ -41,10 +45,15 @@ function Login() {
     return (
         <div className="login-container">
             <div className="login-card">
+                <div className="login-brand">
+                    <div className="login-brand-icon">
+                        <img src={menuIcon} alt="logo" />
+                    </div>
+                    <span className="login-brand-text">Rental<strong>Pro</strong></span>
+                </div>
                 <div className="login-header">
                     <h2>Welcome Back</h2>
                     <p>Please enter your details to sign in.</p>
-
                 </div>
                 <form className="login-form" onSubmit={save}>
                     <div className="input-group">
@@ -68,10 +77,16 @@ function Login() {
                     <div className="login-btn-wrapper">
                         <Btn text="Sign In" setMethod={save} />
                     </div>
-                    <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/pinotp");
-                    }} style={{ textAlign: "center", color: "#a5a5b0", marginTop: "16px", textDecoration: "none", fontSize: "0.95rem", display: "block" }}>Login With PIN</a>
+                    <a
+                        href="#"
+                        className="login-switch-link"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate("/pinotp");
+                        }}
+                    >
+                        🔐 Login With PIN
+                    </a>
                 </form>
             </div>
         </div>

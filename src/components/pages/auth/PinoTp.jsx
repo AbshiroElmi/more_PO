@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Common, { Btn } from "../../Common.jsx";
+import { Btn } from "../../Common.jsx";
+import menuIcon from "../../../assets/images/menu.png";
 import "../../css/Login.css";
 
 function PinoTp() {
-
     const [pin, setPin] = useState(["", "", "", ""]);
     const inputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
     const navigate = useNavigate();
@@ -30,30 +30,34 @@ function PinoTp() {
         if (e && e.preventDefault) e.preventDefault();
         const fullPin = pin.join("");
         if (fullPin.length !== 4) return;
-        else if (fullPin === "2026") {
+        if (fullPin === "2026") {
             localStorage.setItem("isAuthenticated", "true");
-            navigate("/sidebars");
+            localStorage.setItem("username", "Abshiro");
+            localStorage.setItem("userEmail", "abshiro@gmail.com");
+            navigate("/dashboard");
         } else {
-            alert("Invalid PIN");
-
+            alert("Invalid PIN. Default is 2026");
             setPin(["", "", "", ""]);
-
+            inputRefs[0].current.focus();
         }
-        console.log("Logging in with:", fullPin);
     };
 
     return (
         <div className="login-container">
             <div className="login-card">
+                <div className="login-brand">
+                    <div className="login-brand-icon">
+                        <img src={menuIcon} alt="logo" />
+                    </div>
+                    <span className="login-brand-text">Rental<strong>Pro</strong></span>
+                </div>
                 <div className="login-header">
-                    <h2>Secure Login</h2>
-                    <p>Please enter your details and 4-digit PIN.</p>
+                    <h2>Secure PIN Login</h2>
+                    <p>Enter your 4-digit security PIN to continue.</p>
                 </div>
                 <form className="login-form" onSubmit={save}>
-
-
                     <div className="pin-group-container">
-                        <label className="pin-label">Enter 4-Digit PIN</label>
+                        <label className="pin-label">4-Digit PIN (Default: 2026)</label>
                         <div className="pin-inputs">
                             {pin.map((digit, index) => (
                                 <input
@@ -66,21 +70,24 @@ function PinoTp() {
                                     onChange={(e) => handlePinChange(index, e.target.value)}
                                     onKeyDown={(e) => handleKeyDown(index, e)}
                                     maxLength={1}
+                                    autoFocus={index === 0}
                                 />
                             ))}
                         </div>
                     </div>
 
                     <div className="login-btn-wrapper">
-                        <Btn text="Sign In" setMethod={save} />
+                        <Btn text="Verify & Sign In" setMethod={save} />
                     </div>
-                    <a href="#" onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/login");
-
-
-                    }} style={{ textAlign: "center", color: "#a5a5b0", marginTop: "16px", textDecoration: "none", fontSize: "0.95rem", display: "block" }}>
-                        Login With Password
+                    <a
+                        href="#"
+                        className="login-switch-link"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate("/login");
+                        }}
+                    >
+                        🔑 Login With Password
                     </a>
                 </form>
             </div>

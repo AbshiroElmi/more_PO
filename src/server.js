@@ -413,4 +413,33 @@ app.delete("/renting/:id", (req, res) => {
   });
 });
 
+// Express route for dashboard stats
+app.get("/dashboard/stats", (req, res) => {
+  const queries = {
+    houses: "SELECT COUNT(*) AS count FROM houses",
+    apartments: "SELECT COUNT(*) AS count FROM appartments",
+    people: "SELECT COUNT(*) AS count FROM people",
+    renting: "SELECT COUNT(*) AS count FROM renting",
+    billing: "SELECT COUNT(*) AS count FROM billing",
+    accounts: "SELECT COUNT(*) AS count FROM accounts",
+    recentRenting: "SELECT rt_no, app_no, customer, price, rt_date, deposit FROM renting ORDER BY rt_no DESC LIMIT 5",
+    recentBilling: "SELECT bl_no, rt_no, amount, bt_date FROM billing ORDER BY bl_no DESC LIMIT 5",
+  };
+
+  const results = {};
+  const keys = Object.keys(queries);
+  let completed = 0;
+
+  keys.forEach((key) => {
+    conn.query(queries[key], (err, data) => {
+      if (err) { results[key] = null; }
+      else { results[key] = data; }
+      completed++;
+      if (completed === keys.length) {
+        return res.json(results);
+      }
+    });
+  });
+});
+
 app.listen(5000)

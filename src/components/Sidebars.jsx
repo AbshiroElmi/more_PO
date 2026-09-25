@@ -1,68 +1,60 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import menuIcon from "../assets/images/menu.png";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Btn } from "./Common.jsx";
+
+const NAV_ITEMS = [
+    { to: "/dashboard",  icon: "⊞",  label: "Dashboard" },
+    { to: "/apartments", icon: "🏠",  label: "Apartments" },
+    { to: "/houses",     icon: "🏘️", label: "Houses" },
+    { to: "/people",     icon: "👥",  label: "People" },
+    { to: "/renting",    icon: "📋",  label: "Renting" },
+    { to: "/billing",    icon: "💳",  label: "Billing" },
+    { to: "/receipts",   icon: "🧾",  label: "Receipts" },
+    { to: "/accounts",   icon: "🏦",  label: "Accounts" },
+    { to: "/address",    icon: "📍",  label: "Address" },
+    { to: "/users",      icon: "👤",  label: "Users" },
+];
 
 function Sidebars() {
     const navigate = useNavigate();
 
     const handleLogout = () => {
         localStorage.removeItem("isAuthenticated");
+        localStorage.removeItem("username");
+        localStorage.removeItem("userEmail");
         navigate("/login");
     };
 
     return (
-        <>
-            <div className="sidebar" >
-                <header className="header">
-                    <div className="img1">
-                        <img src={menuIcon} alt="menu" />
-                    </div>
-                    {/* <div className="img2">
-                        <FontAwesomeIcon icon={faSearch} />
-                    </div> */}
-                    {/* menu icon */}
-
-                </header>
-                <ul>
-                    <li>
-                        <NavLink to="/dashboard">Dashboard</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/apartments">Apartments</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/houses">Houses</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/accounts">Accounts</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/address">Address</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/billing">Billing</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/people">People</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/receipts">Receipts</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/renting">Renting</NavLink>
-                    </li>
-                    <li>
-                        <NavLink to="/users">Users</NavLink>
-                    </li>
-                </ul>
-                {/* footer in sidebar */}
-                <div className="footer">
-                    <Btn text="Log Out" setMethod={handleLogout} />
+        <div className="sidebar">
+            {/* Logo */}
+            <div className="sidebar-logo">
+                <div className="sidebar-logo-icon">
+                    <img src={menuIcon} alt="logo" />
                 </div>
+                <span className="sidebar-logo-text">Rental<strong>Pro</strong></span>
             </div>
-        </>
+
+            {/* Menu label */}
+            <p className="sidebar-section-label">MENU</p>
+
+            {/* Nav */}
+            <ul>
+                {NAV_ITEMS.map(item => (
+                    <li key={item.to}>
+                        <NavLink to={item.to}>
+                            <span className="nav-icon">{item.icon}</span>
+                            <span>{item.label}</span>
+                        </NavLink>
+                    </li>
+                ))}
+            </ul>
+
+            {/* Footer logout */}
+            <div className="footer">
+                <Btn text="Log Out" setMethod={handleLogout} />
+            </div>
+        </div>
     );
 }
 

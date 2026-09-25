@@ -11,7 +11,8 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color: #fff;
   /* Ensure it fills the screen even if there's global margin/padding */
-  margin: -8px; /* Counteract default body margin if not reset globally */
+  margin: -8px;
+  /* Counteract default body margin if not reset globally */
 }
 
 /* Background animated orbs for a premium dynamic feel */
@@ -28,7 +29,8 @@
 .login-container::before {
   width: 450px;
   height: 450px;
-  background: rgba(99, 102, 241, 0.25); /* Indigo */
+  background: rgba(99, 102, 241, 0.25);
+  /* Indigo */
   top: -150px;
   left: -150px;
 }
@@ -36,7 +38,8 @@
 .login-container::after {
   width: 350px;
   height: 350px;
-  background: rgba(236, 72, 153, 0.2); /* Pink */
+  background: rgba(236, 72, 153, 0.2);
+  /* Pink */
   bottom: -100px;
   right: -100px;
   animation-delay: -6s;
@@ -44,8 +47,13 @@
 }
 
 @keyframes floatOrb {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(40px, 60px) scale(1.1); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  100% {
+    transform: translate(40px, 60px) scale(1.1);
+  }
 }
 
 .login-card {
@@ -92,7 +100,7 @@
 }
 
 /* Targeting the div wrappers from Common.jsx */
-.input-group > div {
+.input-group>div {
   width: 100%;
 }
 
@@ -119,7 +127,7 @@
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
 }
 
-.login-btn-wrapper > div {
+.login-btn-wrapper>div {
   width: 100%;
   margin-top: 12px;
 }
@@ -173,7 +181,8 @@
 
 .pin-box {
   width: 100%;
-  aspect-ratio: 1; /* Makes them perfectly square */
+  aspect-ratio: 1;
+  /* Makes them perfectly square */
   box-sizing: border-box;
   background: rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.08);
