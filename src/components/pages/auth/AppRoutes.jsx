@@ -11,7 +11,6 @@ import Receipts from "../../pages/Receipts.jsx";
 import Renting from "../../pages/Renting.jsx";
 import Users from "../../pages/Users.jsx";
 import Login from "./Login.jsx";
-import PinoTp from "./PinoTp.jsx";
 import "../../css/SidebarCss.css";
 
 
@@ -38,12 +37,11 @@ function AppRoutes() {
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
-                <Route path="/pinotp" element={<AuthRoute><PinoTp /></AuthRoute>} />
                 <Route path="/*" element={
                     <ProtectedRoute>
-                        <div style={{ display: "flex", marginLeft: "220px", minHeight: "100vh", background: "#f5f6fa" }}>
+                        <div style={{ display: "flex", minHeight: "100vh", background: "#f5f6fa", width: "100%", overflowX: "hidden" }}>
                             <Sidebars />
-                            <div style={{ flex: 1, padding: "16px" }}>
+                            <div style={{ flex: 1, marginLeft: "220px", minWidth: 0, width: "calc(100% - 220px)", maxWidth: "calc(100% - 220px)", boxSizing: "border-box" }}>
                                 <Routes>
                                     <Route path="/dashboard" element={<Dashboard />} />
                                     <Route path="/apartments" element={<Apartments />} />

@@ -46,8 +46,8 @@ function Login() {
         <div className="login-container">
             <div className="login-card">
                 <div className="login-brand">
-                    <div className="login-brand-icon">
-                        <img src={menuIcon} alt="logo" />
+                    <div className="login-brand-icon" style={{ width: "40px", height: "40px", minWidth: "40px", minHeight: "40px" }}>
+                        <img src={menuIcon} alt="logo" style={{ width: "24px", height: "24px", objectFit: "contain" }} />
                     </div>
                     <span className="login-brand-text">Rental<strong>Pro</strong></span>
                 </div>
@@ -77,16 +77,6 @@ function Login() {
                     <div className="login-btn-wrapper">
                         <Btn text="Sign In" setMethod={save} />
                     </div>
-                    <a
-                        href="#"
-                        className="login-switch-link"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            navigate("/pinotp");
-                        }}
-                    >
-                        🔐 Login With PIN
-                    </a>
                 </form>
             </div>
         </div>

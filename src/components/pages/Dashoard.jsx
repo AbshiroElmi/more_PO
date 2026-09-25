@@ -52,7 +52,6 @@ function Dashboard() {
                     <p className="dash-subtitle">Apartment Rental Management System</p>
                 </div>
                 <div className="dash-topbar-right">
-                    <span className="dash-date">{new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}</span>
                     <div className="dash-topbar-user">
                         <div className="dash-user-avatar">
                             {username.charAt(0).toUpperCase()}
@@ -88,32 +87,34 @@ function Dashboard() {
                                 <h2>🏠 Recent Rentings</h2>
                                 <a href="/renting" className="dash-see-all">See all →</a>
                             </div>
-                            <table className="dash-table">
-                                <thead>
-                                    <tr>
-                                        <th>Rent No.</th>
-                                        <th>Apt No.</th>
-                                        <th>Customer</th>
-                                        <th>Price</th>
-                                        <th>Deposit</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {stats?.recentRenting?.length > 0 ? stats.recentRenting.map(r => (
-                                        <tr key={r.rt_no}>
-                                            <td><span className="dash-badge green">#{r.rt_no}</span></td>
-                                            <td>{r.app_no}</td>
-                                            <td>{r.customer}</td>
-                                            <td className="dash-money">${Number(r.price).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
-                                            <td className="dash-money">${Number(r.deposit).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
-                                            <td>{formatDate(r.rt_date)}</td>
+                            <div className="dash-table-wrap">
+                                <table className="dash-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Rent No.</th>
+                                            <th>Apt No.</th>
+                                            <th>Customer</th>
+                                            <th>Price</th>
+                                            <th>Deposit</th>
+                                            <th>Date</th>
                                         </tr>
-                                    )) : (
-                                        <tr><td colSpan="6" style={{textAlign:"center",color:"#888"}}>No renting records yet.</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {stats?.recentRenting?.length > 0 ? stats.recentRenting.map(r => (
+                                            <tr key={r.rt_no}>
+                                                <td><span className="dash-badge green">#{r.rt_no}</span></td>
+                                                <td>{r.app_no}</td>
+                                                <td>{r.customer}</td>
+                                                <td className="dash-money">${Number(r.price).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+                                                <td className="dash-money">${Number(r.deposit).toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+                                                <td>{formatDate(r.rt_date)}</td>
+                                            </tr>
+                                        )) : (
+                                            <tr><td colSpan="6" style={{textAlign:"center",color:"#888"}}>No renting records yet.</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         {/* Recent Billing */}
@@ -145,7 +146,7 @@ function Dashboard() {
                         </div>
 
                         {/* Quick Overview */}
-                        <div className="dash-card dash-card--accent">
+                        <div className="dash-card dash-card--accent dash-card--overview">
                             <h2 className="dash-overview-title">📊 Quick Overview</h2>
                             <div className="dash-overview-list">
                                 {[
