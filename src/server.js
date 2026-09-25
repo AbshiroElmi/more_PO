@@ -155,4 +155,53 @@ app.delete("/houses/:id", (req, res) => {
   });
 });
 
+// Express route to fetch accounts
+app.get("/accounts", (req, res) => {
+  const sql = "SELECT * FROM accounts";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+// Express route to create a new account
+app.post("/accounts", (req, res) => {
+  const sql = "INSERT INTO accounts (acc_name, institution, balance) VALUES (?, ?, ?)";
+  const values = [
+    req.body.acc_name,
+    req.body.institution,
+    req.body.balance
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Account added successfully!", id: data.insertId });
+  });
+});
+
+// Express route to update an account
+app.put("/accounts/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE accounts SET acc_name = ?, institution = ?, balance = ? WHERE acc_no = ?";
+  const values = [
+    req.body.acc_name,
+    req.body.institution,
+    req.body.balance,
+    id
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Account updated successfully!" });
+  });
+});
+
+// Express route to delete an account
+app.delete("/accounts/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM accounts WHERE acc_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Account deleted successfully!" });
+  });
+});
+
 app.listen(5000)
