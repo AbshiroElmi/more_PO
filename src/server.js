@@ -251,4 +251,55 @@ app.delete("/address/:id", (req, res) => {
   });
 });
 
+// Express route to fetch billing
+app.get("/billing", (req, res) => {
+  const sql = "SELECT * FROM billing";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+// Express route to create a new billing record
+app.post("/billing", (req, res) => {
+  const sql = "INSERT INTO billing (rt_no, amount, bt_date, description) VALUES (?, ?, ?, ?)";
+  const values = [
+    req.body.rt_no,
+    req.body.amount,
+    req.body.bt_date,
+    req.body.description
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Billing record added successfully!", id: data.insertId });
+  });
+});
+
+// Express route to update a billing record
+app.put("/billing/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE billing SET rt_no = ?, amount = ?, bt_date = ?, description = ? WHERE bl_no = ?";
+  const values = [
+    req.body.rt_no,
+    req.body.amount,
+    req.body.bt_date,
+    req.body.description,
+    id
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Billing record updated successfully!" });
+  });
+});
+
+// Express route to delete a billing record
+app.delete("/billing/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM billing WHERE bl_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Billing record deleted successfully!" });
+  });
+});
+
 app.listen(5000)
