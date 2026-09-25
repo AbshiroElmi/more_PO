@@ -339,4 +339,78 @@ app.delete("/people/:id", (req, res) => {
   });
 });
 
+// Express routes for receipts
+app.get("/receipts", (req, res) => {
+  const sql = "SELECT * FROM receipts";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+app.post("/receipts", (req, res) => {
+  const sql = "INSERT INTO receipts (p_no, acc_no, rt_date) VALUES (?, ?, ?)";
+  const values = [req.body.p_no, req.body.acc_no, req.body.rt_date];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Receipt added successfully!", id: data.insertId });
+  });
+});
+
+app.put("/receipts/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE receipts SET p_no = ?, acc_no = ?, rt_date = ? WHERE r_no = ?";
+  const values = [req.body.p_no, req.body.acc_no, req.body.rt_date, id];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Receipt updated successfully!" });
+  });
+});
+
+app.delete("/receipts/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM receipts WHERE r_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Receipt deleted successfully!" });
+  });
+});
+
+// Express routes for renting
+app.get("/renting", (req, res) => {
+  const sql = "SELECT * FROM renting";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+app.post("/renting", (req, res) => {
+  const sql = "INSERT INTO renting (app_no, customer, price, rt_date, deposit, description) VALUES (?, ?, ?, ?, ?, ?)";
+  const values = [req.body.app_no, req.body.customer, req.body.price, req.body.rt_date, req.body.deposit, req.body.description];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Renting record added successfully!", id: data.insertId });
+  });
+});
+
+app.put("/renting/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE renting SET app_no = ?, customer = ?, price = ?, rt_date = ?, deposit = ?, description = ? WHERE rt_no = ?";
+  const values = [req.body.app_no, req.body.customer, req.body.price, req.body.rt_date, req.body.deposit, req.body.description, id];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Renting record updated successfully!" });
+  });
+});
+
+app.delete("/renting/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM renting WHERE rt_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Renting record deleted successfully!" });
+  });
+});
+
 app.listen(5000)
