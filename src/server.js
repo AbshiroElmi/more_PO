@@ -204,4 +204,51 @@ app.delete("/accounts/:id", (req, res) => {
   });
 });
 
+// Express route to fetch address
+app.get("/address", (req, res) => {
+  const sql = "SELECT * FROM address";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+// Express route to create a new address
+app.post("/address", (req, res) => {
+  const sql = "INSERT INTO address (district, village) VALUES (?, ?)";
+  const values = [
+    req.body.district,
+    req.body.village
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Address added successfully!", id: data.insertId });
+  });
+});
+
+// Express route to update an address
+app.put("/address/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE address SET district = ?, village = ? WHERE add_no = ?";
+  const values = [
+    req.body.district,
+    req.body.village,
+    id
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Address updated successfully!" });
+  });
+});
+
+// Express route to delete an address
+app.delete("/address/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM address WHERE add_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Address deleted successfully!" });
+  });
+});
+
 app.listen(5000)
