@@ -35,10 +35,28 @@ function Sidebars() {
                     <li>
                         <NavLink to="/houses">Houses</NavLink>
                     </li>
-
+                    <li>
+                        <NavLink to="/accounts">Accounts</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/address">Address</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/billing">Billing</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/people">People</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/receipts">Receipts</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/renting">Renting</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/users">Users</NavLink>
+                    </li>
                 </ul>
-
-
                 {/* footer in sidebar */}
                 <div className="footer">
                     <Btn text="Log Out" setMethod={handleLogout} />
