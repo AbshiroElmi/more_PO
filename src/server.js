@@ -106,4 +106,53 @@ app.delete("/users/:id", (req, res) => {
   });
 });
 
+// Express route to fetch houses
+app.get("/houses", (req, res) => {
+  const sql = "SELECT * FROM houses";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+// Express route to create a new house
+app.post("/houses", (req, res) => {
+  const sql = "INSERT INTO houses (house_name, owner, add_no) VALUES (?, ?, ?)";
+  const values = [
+    req.body.house_name,
+    req.body.owner,
+    req.body.add_no
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "House added successfully!", id: data.insertId });
+  });
+});
+
+// Express route to update a house
+app.put("/houses/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE houses SET house_name = ?, owner = ?, add_no = ? WHERE h_no = ?";
+  const values = [
+    req.body.house_name,
+    req.body.owner,
+    req.body.add_no,
+    id
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "House updated successfully!" });
+  });
+});
+
+// Express route to delete a house
+app.delete("/houses/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM houses WHERE h_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "House deleted successfully!" });
+  });
+});
+
 app.listen(5000)
