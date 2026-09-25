@@ -302,4 +302,41 @@ app.delete("/billing/:id", (req, res) => {
   });
 });
 
+// Express routes for people
+app.get("/people", (req, res) => {
+  const sql = "SELECT * FROM people";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+app.post("/people", (req, res) => {
+  const sql = "INSERT INTO people (name, tell) VALUES (?, ?)";
+  const values = [req.body.name, req.body.tell];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Person added successfully!", id: data.insertId });
+  });
+});
+
+app.put("/people/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE people SET name = ?, tell = ? WHERE p_no = ?";
+  const values = [req.body.name, req.body.tell, id];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Person updated successfully!" });
+  });
+});
+
+app.delete("/people/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM people WHERE p_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Person deleted successfully!" });
+  });
+});
+
 app.listen(5000)
