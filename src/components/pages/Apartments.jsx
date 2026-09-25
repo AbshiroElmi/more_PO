@@ -88,21 +88,26 @@ function Apartments() {
     </tr>
                     </thead>
                     <tbody>
-                        {apartments.map((apt) => (
-                            <tr key={apt.app_no}>
-                                <td className="col-no">{apt.app_no}</td>
-                                <td className="col-name">{apt.app_name}</td>
-                                <td>
-                                    <span className="h-badge">{apt.h_no}</span>
-                                </td>
-                                <td>
-                                    <span className="stat-pill">🛏 {apt.rooms}</span>
-                                </td>
-                                <td>
-                                    <span className="stat-pill">🚿 {apt.toilets}</span>
-                                </td>
-                                <td className="col-desc">{apt.description}</td>
-                             
+                        {apartments.map((apt, index) => (
+                            <tr key={apt.app_no || index}>
+                                {Object.keys(apartments[0]).map((key) => {
+                                    if (key === 'app_no') return <td key={key} className="col-no">{apt[key]}</td>;
+                                    if (key === 'app_name') return <td key={key} className="col-name">{apt[key]}</td>;
+                                    if (key === 'h_no') return <td key={key}><span className="h-badge">{apt[key]}</span></td>;
+                                    if (key === 'rooms') return <td key={key}><span className="stat-pill">🛏 {apt[key]}</span></td>;
+                                    if (key === 'toilets') return <td key={key}><span className="stat-pill">🚿 {apt[key]}</span></td>;
+                                    if (key === 'description') return <td key={key} className="col-desc">{apt[key]}</td>;
+                                    if (key === 'status') {
+                                        return (
+                                            <td key={key}>
+                                                <span className={`status-badge ${apt[key]?.toLowerCase() || 'available'}`}>
+                                                    {apt[key]}
+                                                </span>
+                                            </td>
+                                        );
+                                    }
+                                    return <td key={key}>{apt[key]}</td>;
+                                })}
                             </tr>
                         ))}
                     </tbody>
