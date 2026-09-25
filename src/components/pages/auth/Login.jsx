@@ -8,19 +8,33 @@ function Login() {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    let save = (e) => {
+    let save = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
 
         if (!username && !password) return;
 
-        if (username === "admin" && password === "2026") {
-            localStorage.setItem("isAuthenticated", "true");
-             navigate("/sidebars");
-        } else {
-            setUsername("");
-            setPassword("");
+        try {
+            const response = await fetch("http://localhost:5000/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ username, password }),
+            });
 
-            alert("Invalid username or password");
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem("isAuthenticated", "true");
+                navigate("/dashboard");
+            } else {
+                setUsername("");
+                setPassword("");
+                alert("Invalid username or password");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            alert("An error occurred during login. Please try again.");
         }
     };
 

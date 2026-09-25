@@ -40,5 +40,18 @@ app.post("/appartments", (req, res) => {
   });
 });
 
+// Express route for user login
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  const sql = "SELECT * FROM users WHERE user_name = ? AND pass = ?";
+  conn.query(sql, [username, password], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (data.length > 0) {
+      return res.json({ success: true, message: "Login successful", user: data[0] });
+    } else {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    }
+  });
+});
 
 app.listen(5000)
