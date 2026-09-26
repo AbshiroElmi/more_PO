@@ -121,7 +121,7 @@ function Renting() {
     return (
         <div className="apartments-page">
             <div className="apartments-header">
-                <h1><span className="page-icon">🏠</span> Renting</h1>
+                <h1> Renting</h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search renting records..." />
                 <span className="apartments-count">{filteredRenting.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Renting</button>

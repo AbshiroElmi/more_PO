@@ -136,7 +136,6 @@ function Accounts() {
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1>
-                    <span className="page-icon">🏦</span>
                     Accounts
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search accounts..." />

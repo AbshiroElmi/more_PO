@@ -112,7 +112,7 @@ function Receipts() {
     return (
         <div className="apartments-page">
             <div className="apartments-header">
-                <h1><span className="page-icon">🧾</span> Receipts</h1>
+                <h1>Receipts</h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search receipts..." />
                 <span className="apartments-count">{filteredReceipts.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Receipt</button>

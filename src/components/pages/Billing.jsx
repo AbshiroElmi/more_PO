@@ -144,10 +144,7 @@ function Billing() {
     return (
         <div className="apartments-page">
             <div className="apartments-header">
-                <h1>
-                    <span className="page-icon">💳</span>
-                    Billing
-                </h1>
+                <h1>Billing</h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search billing records..." />
                 <span className="apartments-count">{filteredBilling.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Billing</button>
