@@ -9,11 +9,16 @@ app.use(cors(
     ))
 
 let conn=mysql.createConnection({
-    host:"localhost",
+    host:"127.0.0.1",
+    port:3307,
     user:"root",
     password:"",
     database:"apartment_rental"
 })
+
+conn.on("error", (err) => {
+  console.error("MySQL connection error:", err.message);
+});
 
 // Express route to fetch apartments
 app.get("/appartments", (req, res) => {
