@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
+import { SearchBar } from "../Common.jsx";
 
 function Receipts() {
     const [receipts, setReceipts] = useState([]);
@@ -8,6 +9,7 @@ function Receipts() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({ p_no: "", acc_no: "", rt_date: "" });
 
     const fetchReceipts = () => {
@@ -79,11 +81,17 @@ function Receipts() {
     if (loading) return <div className="apartments-page">Loading receipts...</div>;
     if (error) return <div className="apartments-page">Error: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredReceipts = !q ? receipts : receipts.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1><span className="page-icon">🧾</span> Receipts</h1>
-                <span className="apartments-count">{receipts.length} records</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search receipts..." />
+                <span className="apartments-count">{filteredReceipts.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Receipt</button>
             </div>
 
@@ -99,7 +107,7 @@ function Receipts() {
                         </tr>
                     </thead>
                     <tbody>
-                        {receipts.map((record) => (
+                        {filteredReceipts.map((record) => (
                             <tr key={record.r_no}>
                                 <td className="col-no">{record.r_no}</td>
                                 <td>{record.p_no}</td>
@@ -117,7 +125,7 @@ function Receipts() {
                                 </td>
                             </tr>
                         ))}
-                        {receipts.length === 0 && (
+                        {filteredReceipts.length === 0 && (
                             <tr><td colSpan="5" style={{ textAlign: "center" }}>No receipts found.</td></tr>
                         )}
                     </tbody>

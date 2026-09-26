@@ -20,6 +20,36 @@ export const Btn = ({ text, setMethod }) => {
   );
 };
 
+export const SearchBar = ({ value, onChange, placeholder = "Search..." }) => {
+  return (
+    <div className="search-box">
+      <svg className="search-box-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="9" cy="9" r="6.5" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M18 18L14 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+      <input
+        type="text"
+        className="search-input"
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      {value && (
+        <button
+          type="button"
+          className="search-box-clear"
+          aria-label="Clear search"
+          onClick={() => onChange("")}
+        >
+          <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        </button>
+      )}
+    </div>
+  );
+};
+
 export const Table = ({ data }) => {
   if (!data || data.length === 0) return null;
 const h = Object.keys(data)

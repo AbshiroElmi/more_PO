@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
+import { SearchBar } from "../Common.jsx";
 
 function Billing() {
     const [billingRecords, setBillingRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingBillingId, setEditingBillingId] = useState(null);
+    const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
         rt_no: "", amount: "", bt_date: "", description: ""
@@ -111,6 +113,11 @@ function Billing() {
     if (loading) return <div className="apartments-page">Loading billing data...</div>;
     if (error) return <div className="apartments-page">Error fetching billing data: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredBilling = !q ? billingRecords : billingRecords.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
@@ -118,7 +125,8 @@ function Billing() {
                     <span className="page-icon">💳</span>
                     Billing
                 </h1>
-                <span className="apartments-count">{billingRecords.length} records</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search billing records..." />
+                <span className="apartments-count">{filteredBilling.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Billing</button>
             </div>
 
@@ -135,7 +143,7 @@ function Billing() {
                         </tr>
                     </thead>
                     <tbody>
-                        {billingRecords.map((record) => (
+                        {filteredBilling.map((record) => (
                             <tr key={record.bl_no}>
                                 <td className="col-no">{record.bl_no}</td>
                                 <td>{record.rt_no}</td>
@@ -160,7 +168,7 @@ function Billing() {
                                 </td>
                             </tr>
                         ))}
-                        {billingRecords.length === 0 && (
+                        {filteredBilling.length === 0 && (
                             <tr>
                                 <td colSpan="6" style={{ textAlign: "center" }}>No billing records found.</td>
                             </tr>

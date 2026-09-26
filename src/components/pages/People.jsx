@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
+import { SearchBar } from "../Common.jsx";
 
 function People() {
     const [people, setPeople] = useState([]);
@@ -8,6 +9,7 @@ function People() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingPersonId, setEditingPersonId] = useState(null);
+    const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({ name: "", tell: "" });
 
     const fetchPeople = () => {
@@ -89,6 +91,11 @@ function People() {
     if (loading) return <div className="apartments-page">Loading people...</div>;
     if (error) return <div className="apartments-page">Error fetching people: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredPeople = !q ? people : people.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
@@ -96,7 +103,8 @@ function People() {
                     <span className="page-icon">👥</span>
                     People
                 </h1>
-                <span className="apartments-count">{people.length} people</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search people..." />
+                <span className="apartments-count">{filteredPeople.length} people</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Person</button>
             </div>
 
@@ -111,7 +119,7 @@ function People() {
                         </tr>
                     </thead>
                     <tbody>
-                        {people.map((person) => (
+                        {filteredPeople.map((person) => (
                             <tr key={person.p_no}>
                                 <td className="col-no">{person.p_no}</td>
                                 <td className="col-name">{person.name}</td>
@@ -132,7 +140,7 @@ function People() {
                                 </td>
                             </tr>
                         ))}
-                        {people.length === 0 && (
+                        {filteredPeople.length === 0 && (
                             <tr>
                                 <td colSpan="4" style={{ textAlign: "center" }}>No people found.</td>
                             </tr>

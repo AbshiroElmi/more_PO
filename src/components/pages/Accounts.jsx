@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
+import { SearchBar } from "../Common.jsx";
 
 function Accounts() {
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingAccountId, setEditingAccountId] = useState(null);
+    const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
         acc_name: "", institution: "", balance: ""
@@ -102,6 +104,11 @@ function Accounts() {
     if (loading) return <div className="apartments-page">Loading accounts...</div>;
     if (error) return <div className="apartments-page">Error fetching accounts: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredAccounts = !q ? accounts : accounts.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
@@ -109,7 +116,8 @@ function Accounts() {
                     <span className="page-icon">🏦</span>
                     Accounts
                 </h1>
-                <span className="apartments-count">{accounts.length} accounts</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search accounts..." />
+                <span className="apartments-count">{filteredAccounts.length} accounts</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Account</button>
             </div>
 
@@ -125,7 +133,7 @@ function Accounts() {
                         </tr>
                     </thead>
                     <tbody>
-                        {accounts.map((account) => (
+                        {filteredAccounts.map((account) => (
                             <tr key={account.acc_no}>
                                 <td className="col-no">{account.acc_no}</td>
                                 <td className="col-name">{account.acc_name}</td>
@@ -149,7 +157,7 @@ function Accounts() {
                                 </td>
                             </tr>
                         ))}
-                        {accounts.length === 0 && (
+                        {filteredAccounts.length === 0 && (
                             <tr>
                                 <td colSpan="5" style={{ textAlign: "center" }}>No accounts found.</td>
                             </tr>

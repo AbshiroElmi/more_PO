@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
+import { SearchBar } from "../Common.jsx";
 
 function Users() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingUserId, setEditingUserId] = useState(null);
+    const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
         user_name: "", pass: "", p_no: ""
@@ -103,6 +105,11 @@ function Users() {
     if (loading) return <div className="apartments-page">Loading users...</div>;
     if (error) return <div className="apartments-page">Error fetching users: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredUsers = !q ? users : users.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
@@ -110,7 +117,8 @@ function Users() {
                     <span className="page-icon">👤</span>
                     Users
                 </h1>
-                <span className="apartments-count">{users.length} users</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search users..." />
+                <span className="apartments-count">{filteredUsers.length} users</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add User</button>
             </div>
 
@@ -125,7 +133,7 @@ function Users() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
+                        {filteredUsers.map((user) => (
                             <tr key={user.user_id}>
                                 <td className="col-no">{user.user_id}</td>
                                 <td className="col-name">{user.user_name}</td>
@@ -148,7 +156,7 @@ function Users() {
                                 </td>
                             </tr>
                         ))}
-                        {users.length === 0 && (
+                        {filteredUsers.length === 0 && (
                             <tr>
                                 <td colSpan="4" style={{ textAlign: "center" }}>No users found.</td>
                             </tr>

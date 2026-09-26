@@ -42,6 +42,76 @@
     padding: 4px 12px;
 }
 
+/* ─── Search Box ─────────────────────────────────────────────── */
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    padding: 8px 14px;
+    min-width: 240px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.search-box:focus-within {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.search-box-icon {
+    width: 16px;
+    height: 16px;
+    color: #9ca3af;
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.search-box:focus-within .search-box-icon {
+    color: #16a34a;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: #111827;
+    width: 100%;
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+}
+
+.search-box-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    background: #f3f4f6;
+    border-radius: 50%;
+    color: #6b7280;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+}
+
+.search-box-clear svg {
+    width: 10px;
+    height: 10px;
+}
+
+.search-box-clear:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
 /* ─── Add Button ─────────────────────────────────────────────── */
 .btn-add {
     margin-left: auto;

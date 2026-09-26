@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
+import { SearchBar } from "../Common.jsx";
 
 function Renting() {
     const [rentingRecords, setRentingRecords] = useState([]);
@@ -8,6 +9,7 @@ function Renting() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({
         app_no: "", customer: "", price: "", rt_date: "", deposit: "", description: ""
     });
@@ -88,11 +90,17 @@ function Renting() {
     if (loading) return <div className="apartments-page">Loading renting records...</div>;
     if (error) return <div className="apartments-page">Error: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredRenting = !q ? rentingRecords : rentingRecords.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1><span className="page-icon">🏠</span> Renting</h1>
-                <span className="apartments-count">{rentingRecords.length} records</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search renting records..." />
+                <span className="apartments-count">{filteredRenting.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Renting</button>
             </div>
 
@@ -111,7 +119,7 @@ function Renting() {
                         </tr>
                     </thead>
                     <tbody>
-                        {rentingRecords.map((record) => (
+                        {filteredRenting.map((record) => (
                             <tr key={record.rt_no}>
                                 <td className="col-no">{record.rt_no}</td>
                                 <td>{record.app_no}</td>
@@ -132,7 +140,7 @@ function Renting() {
                                 </td>
                             </tr>
                         ))}
-                        {rentingRecords.length === 0 && (
+                        {filteredRenting.length === 0 && (
                             <tr><td colSpan="8" style={{ textAlign: "center" }}>No renting records found.</td></tr>
                         )}
                     </tbody>

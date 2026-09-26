@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
+import { SearchBar } from "../Common.jsx";
 
 function Apartments() {
     const [apartments, setApartments] = useState([]);
@@ -8,6 +9,7 @@ function Apartments() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingApartmentId, setEditingApartmentId] = useState(null);
+    const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({
         app_name: "", h_no: "", rooms: "", toilets: "", description: ""
     });
@@ -103,16 +105,21 @@ function Apartments() {
     if (loading) return <div className="apartments-page">Loading apartments...</div>;
     if (error) return <div className="apartments-page">Error fetching apartments: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredApartments = !q ? apartments : apartments.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
 
             {/* Header */}
             <div className="apartments-header">
                 <h1>
-                    <span className="page-icon">🏠</span>
                     Apartments
                 </h1>
-                <span className="apartments-count">{apartments.length} units</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search apartments..." />
+                <span className="apartments-count">{filteredApartments.length} units</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Apartment</button>
             </div>
 
@@ -132,7 +139,7 @@ function Apartments() {
     </tr>
                     </thead>
                     <tbody>
-                        {apartments.map((apt, index) => (
+                        {filteredApartments.map((apt, index) => (
                             <tr key={apt.app_no || index}>
                                 {Object.keys(apartments[0]).map((key) => {
                                     if (key === 'app_no') return <td key={key} className="col-no">{apt[key]}</td>;
@@ -170,7 +177,7 @@ function Apartments() {
                                 </td>
                             </tr>
                         ))}
-                        {apartments.length === 0 && (
+                        {filteredApartments.length === 0 && (
                             <tr>
                                 <td colSpan="7" style={{ textAlign: "center" }}>No apartments found.</td>
                             </tr>

@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
+import { SearchBar } from "../Common.jsx";
 
 function Houses() {
     const [houses, setHouses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingHouseId, setEditingHouseId] = useState(null);
+    const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
         house_name: "", owner: "", add_no: ""
@@ -102,14 +104,19 @@ function Houses() {
     if (loading) return <div className="apartments-page">Loading houses...</div>;
     if (error) return <div className="apartments-page">Error fetching houses: {error}</div>;
 
+    const q = search.trim().toLowerCase();
+    const filteredHouses = !q ? houses : houses.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1>
-                    <span className="page-icon">🏘️</span>
                     Houses
                 </h1>
-                <span className="apartments-count">{houses.length} houses</span>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search houses..." />
+                <span className="apartments-count">{filteredHouses.length} houses</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add House</button>
             </div>
 
@@ -125,7 +132,7 @@ function Houses() {
                         </tr>
                     </thead>
                     <tbody>
-                        {houses.map((house) => (
+                        {filteredHouses.map((house) => (
                             <tr key={house.h_no}>
                                 <td className="col-no">{house.h_no}</td>
                                 <td className="col-name">{house.house_name}</td>
@@ -149,7 +156,7 @@ function Houses() {
                                 </td>
                             </tr>
                         ))}
-                        {houses.length === 0 && (
+                        {filteredHouses.length === 0 && (
                             <tr>
                                 <td colSpan="5" style={{ textAlign: "center" }}>No houses found.</td>
                             </tr>

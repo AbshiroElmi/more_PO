@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
 import "../css/Reports.css";
+import { SearchBar } from "../Common.jsx";
 
 function formatDate(raw) {
     if (!raw) return "—";
@@ -131,6 +132,7 @@ function Reports() {
     const [activeKey, setActiveKey] = useState(REPORTS[0].key);
     const [cache, setCache] = useState({});
     const [errors, setErrors] = useState({});
+    const [search, setSearch] = useState("");
 
     const active = REPORTS.find((r) => r.key === activeKey);
 
@@ -154,9 +156,14 @@ function Reports() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeKey]);
 
-    const rows = cache[activeKey] || [];
+    const allRows = cache[activeKey] || [];
     const errorKey = errors[activeKey];
     const isLoading = cache[activeKey] === undefined && !errorKey;
+
+    const q = search.trim().toLowerCase();
+    const rows = !q ? allRows : allRows.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
 
     return (
         <div className="apartments-page">
@@ -165,6 +172,7 @@ function Reports() {
                     <span className="page-icon">📊</span>
                     Reports
                 </h1>
+                <SearchBar value={search} onChange={setSearch} placeholder={`Search ${active.label.toLowerCase()}...`} />
                 <span className="apartments-count">{rows.length} records</span>
             </div>
 
