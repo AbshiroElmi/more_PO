@@ -17,7 +17,6 @@ const REPORTS = [
     {
         key: "apartments",
         label: "Apartments",
-        icon: "🏠",
         endpoint: "http://localhost:5000/appartments",
         rowKey: "app_no",
         columns: [
@@ -32,7 +31,6 @@ const REPORTS = [
     {
         key: "houses",
         label: "Houses",
-        icon: "🏘️",
         endpoint: "http://localhost:5000/houses",
         rowKey: "h_no",
         columns: [
@@ -45,7 +43,6 @@ const REPORTS = [
     {
         key: "people",
         label: "People",
-        icon: "👥",
         endpoint: "http://localhost:5000/people",
         rowKey: "p_no",
         columns: [
@@ -57,7 +54,6 @@ const REPORTS = [
     {
         key: "renting",
         label: "Renting",
-        icon: "📋",
         endpoint: "http://localhost:5000/renting",
         rowKey: "rt_no",
         columns: [
@@ -73,7 +69,6 @@ const REPORTS = [
     {
         key: "billing",
         label: "Billing",
-        icon: "💳",
         endpoint: "http://localhost:5000/billing",
         rowKey: "bl_no",
         columns: [
@@ -87,7 +82,6 @@ const REPORTS = [
     {
         key: "receipts",
         label: "Receipts",
-        icon: "🧾",
         endpoint: "http://localhost:5000/receipts",
         rowKey: "r_no",
         columns: [
@@ -100,7 +94,6 @@ const REPORTS = [
     {
         key: "accounts",
         label: "Accounts",
-        icon: "🏦",
         endpoint: "http://localhost:5000/accounts",
         rowKey: "acc_no",
         columns: [
@@ -113,7 +106,6 @@ const REPORTS = [
     {
         key: "address",
         label: "Address",
-        icon: "📍",
         endpoint: "http://localhost:5000/address",
         rowKey: "add_no",
         columns: [
@@ -125,7 +117,6 @@ const REPORTS = [
     {
         key: "users",
         label: "Users",
-        icon: "👤",
         endpoint: "http://localhost:5000/users",
         rowKey: "user_id",
         columns: [
@@ -184,7 +175,6 @@ function Reports() {
                         className={`report-tab ${r.key === activeKey ? "active" : ""}`}
                         onClick={() => setActiveKey(r.key)}
                     >
-                        <span className="report-tab-icon">{r.icon}</span>
                         {r.label}
                     </button>
                 ))}
