@@ -13,6 +13,7 @@ const NAV_ITEMS = [
     { to: "/accounts",   icon: "🏦",  label: "Accounts" },
     { to: "/address",    icon: "📍",  label: "Address" },
     { to: "/users",      icon: "👤",  label: "Users" },
+    { to: "/reports",    icon: "📊",  label: "Reports" },
 ];
 
 function Sidebars() {
@@ -35,7 +36,7 @@ function Sidebars() {
                 <span className="sidebar-logo-text">Rental<strong>Pro</strong></span>
             </div>
 
-        
+
 
             {/* Nav */}
             <ul>

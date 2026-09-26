@@ -1,0 +1,53 @@
+/* ─── Report Tabs ────────────────────────────────────────────── */
+.report-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.report-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.report-tab-icon {
+    font-size: 15px;
+}
+
+.report-tab:hover {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #16a34a;
+}
+
+.report-tab.active {
+    background: linear-gradient(90deg, #14532d 0%, #166534 100%);
+    border-color: #14532d;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+}
+
+/* ─── Report State (loading / error) ─────────────────────────── */
+.report-state {
+    padding: 40px 20px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: #6b7280;
+}
+
+.report-state--error {
+    color: #dc2626;
+}

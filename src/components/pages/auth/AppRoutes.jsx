@@ -10,6 +10,7 @@ import People from "../../pages/People.jsx";
 import Receipts from "../../pages/Receipts.jsx";
 import Renting from "../../pages/Renting.jsx";
 import Users from "../../pages/Users.jsx";
+import Reports from "../../pages/Reports.jsx";
 import Login from "./Login.jsx";
 import "../../css/SidebarCss.css";
 
@@ -53,6 +54,7 @@ function AppRoutes() {
                                     <Route path="/receipts" element={<Receipts />} />
                                     <Route path="/renting" element={<Renting />} />
                                     <Route path="/users" element={<Users />} />
+                                    <Route path="/reports" element={<Reports />} />
                                     <Route path="*" element={<Navigate to="/login" replace />} />
                                 </Routes>
                             </div>
