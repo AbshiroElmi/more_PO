@@ -45,6 +45,34 @@ app.post("/appartments", (req, res) => {
   });
 });
 
+// Express route to update an apartment
+app.put("/appartments/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE appartments SET app_name = ?, h_no = ?, rooms = ?, toilets = ?, description = ? WHERE app_no = ?";
+  const values = [
+    req.body.app_name,
+    req.body.h_no,
+    req.body.rooms,
+    req.body.toilets,
+    req.body.description,
+    id
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Apartment updated successfully!" });
+  });
+});
+
+// Express route to delete an apartment
+app.delete("/appartments/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM appartments WHERE app_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Apartment deleted successfully!" });
+  });
+});
+
 // Express route for user login
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
