@@ -35,8 +35,7 @@ function Sidebars() {
                 <span className="sidebar-logo-text">Rental<strong>Pro</strong></span>
             </div>
 
-            {/* Menu label */}
-            <p className="sidebar-section-label">MENU</p>
+        
 
             {/* Nav */}
             <ul>
