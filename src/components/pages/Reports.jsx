@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
 import "../css/Reports.css";
-import { SearchBar } from "../Common.jsx";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV } from "../csvUtils.js";
 
 function formatDate(raw) {
     if (!raw) return "—";
@@ -165,6 +166,10 @@ function Reports() {
         Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
     );
 
+    const handleExportActive = () => {
+        exportToCSV(rows, active.key);
+    };
+
     return (
         <div className="apartments-page">
             <div className="apartments-header">
@@ -174,6 +179,7 @@ function Reports() {
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder={`Search ${active.label.toLowerCase()}...`} />
                 <span className="apartments-count">{rows.length} records</span>
+                <ExportImportMenu onExport={handleExportActive} />
             </div>
 
             <div className="report-tabs">

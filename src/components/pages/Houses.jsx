@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
-import { SearchBar } from "../Common.jsx";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Houses() {
     const [houses, setHouses] = useState([]);
@@ -101,6 +102,28 @@ function Houses() {
         }
     };
 
+    const handleExportHouses = () => {
+        exportToCSV(houses, "houses");
+    };
+
+    const handleImportHouses = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/houses", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchHouses();
+            alert(`Imported ${rows.length} house(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading houses...</div>;
     if (error) return <div className="apartments-page">Error fetching houses: {error}</div>;
 
@@ -118,6 +141,7 @@ function Houses() {
                 <SearchBar value={search} onChange={setSearch} placeholder="Search houses..." />
                 <span className="apartments-count">{filteredHouses.length} houses</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add House</button>
+                <ExportImportMenu onExport={handleExportHouses} onImport={handleImportHouses} />
             </div>
 
             <div className="table-wrapper">

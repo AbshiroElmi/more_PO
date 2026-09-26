@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
-import { SearchBar } from "../Common.jsx";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Renting() {
     const [rentingRecords, setRentingRecords] = useState([]);
@@ -87,6 +88,28 @@ function Renting() {
         } catch (err) { alert(err.message); }
     };
 
+    const handleExportRenting = () => {
+        exportToCSV(rentingRecords, "renting", ["formattedDate"]);
+    };
+
+    const handleImportRenting = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/renting", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchRenting();
+            alert(`Imported ${rows.length} renting record(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading renting records...</div>;
     if (error) return <div className="apartments-page">Error: {error}</div>;
 
@@ -102,6 +125,7 @@ function Renting() {
                 <SearchBar value={search} onChange={setSearch} placeholder="Search renting records..." />
                 <span className="apartments-count">{filteredRenting.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Renting</button>
+                <ExportImportMenu onExport={handleExportRenting} onImport={handleImportRenting} />
             </div>
 
             <div className="table-wrapper">

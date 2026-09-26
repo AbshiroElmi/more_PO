@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
-import { SearchBar } from "../Common.jsx";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Billing() {
     const [billingRecords, setBillingRecords] = useState([]);
@@ -110,6 +111,28 @@ function Billing() {
         }
     };
 
+    const handleExportBilling = () => {
+        exportToCSV(billingRecords, "billing", ["formattedDate"]);
+    };
+
+    const handleImportBilling = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/billing", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchBillingRecords();
+            alert(`Imported ${rows.length} billing record(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading billing data...</div>;
     if (error) return <div className="apartments-page">Error fetching billing data: {error}</div>;
 
@@ -128,6 +151,7 @@ function Billing() {
                 <SearchBar value={search} onChange={setSearch} placeholder="Search billing records..." />
                 <span className="apartments-count">{filteredBilling.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Billing</button>
+                <ExportImportMenu onExport={handleExportBilling} onImport={handleImportBilling} />
             </div>
 
             <div className="table-wrapper">

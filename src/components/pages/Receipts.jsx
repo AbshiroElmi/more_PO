@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
-import { SearchBar } from "../Common.jsx";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Receipts() {
     const [receipts, setReceipts] = useState([]);
@@ -78,6 +79,28 @@ function Receipts() {
         } catch (err) { alert(err.message); }
     };
 
+    const handleExportReceipts = () => {
+        exportToCSV(receipts, "receipts", ["formattedDate"]);
+    };
+
+    const handleImportReceipts = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/receipts", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchReceipts();
+            alert(`Imported ${rows.length} receipt(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading receipts...</div>;
     if (error) return <div className="apartments-page">Error: {error}</div>;
 
@@ -93,6 +116,7 @@ function Receipts() {
                 <SearchBar value={search} onChange={setSearch} placeholder="Search receipts..." />
                 <span className="apartments-count">{filteredReceipts.length} records</span>
                 <button className="btn-add" onClick={handleOpenAddModal}>+ Add Receipt</button>
+                <ExportImportMenu onExport={handleExportReceipts} onImport={handleImportReceipts} />
             </div>
 
             <div className="table-wrapper">
