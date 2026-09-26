@@ -115,8 +115,10 @@ function Receipts() {
                 <h1>Receipts</h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search receipts..." />
                 <span className="apartments-count">{filteredReceipts.length} records</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Receipt</button>
-                <ExportImportMenu onExport={handleExportReceipts} onImport={handleImportReceipts} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Receipt</button>
+                    <ExportImportMenu onExport={handleExportReceipts} onImport={handleImportReceipts} />
+                </div>
             </div>
 
             <div className="table-wrapper">

@@ -124,8 +124,10 @@ function Renting() {
                 <h1> Renting</h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search renting records..." />
                 <span className="apartments-count">{filteredRenting.length} records</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Renting</button>
-                <ExportImportMenu onExport={handleExportRenting} onImport={handleImportRenting} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Renting</button>
+                    <ExportImportMenu onExport={handleExportRenting} onImport={handleImportRenting} />
+                </div>
             </div>
 
             <div className="table-wrapper">

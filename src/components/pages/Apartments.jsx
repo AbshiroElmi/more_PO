@@ -143,8 +143,10 @@ function Apartments() {
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search apartments..." />
                 <span className="apartments-count">{filteredApartments.length} units</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Apartment</button>
-                <ExportImportMenu onExport={handleExportApartments} onImport={handleImportApartments} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Apartment</button>
+                    <ExportImportMenu onExport={handleExportApartments} onImport={handleImportApartments} />
+                </div>
             </div>
 
             {/* Table */}

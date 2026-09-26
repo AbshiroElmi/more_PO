@@ -127,8 +127,10 @@ function People() {
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search people..." />
                 <span className="apartments-count">{filteredPeople.length} people</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Person</button>
-                <ExportImportMenu onExport={handleExportPeople} onImport={handleImportPeople} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Person</button>
+                    <ExportImportMenu onExport={handleExportPeople} onImport={handleImportPeople} />
+                </div>
             </div>
 
             <div className="table-wrapper">

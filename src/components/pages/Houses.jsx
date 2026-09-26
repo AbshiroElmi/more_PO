@@ -140,8 +140,10 @@ function Houses() {
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search houses..." />
                 <span className="apartments-count">{filteredHouses.length} houses</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add House</button>
-                <ExportImportMenu onExport={handleExportHouses} onImport={handleImportHouses} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add House</button>
+                    <ExportImportMenu onExport={handleExportHouses} onImport={handleImportHouses} />
+                </div>
             </div>
 
             <div className="table-wrapper">

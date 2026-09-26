@@ -147,8 +147,10 @@ function Billing() {
                 <h1>Billing</h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search billing records..." />
                 <span className="apartments-count">{filteredBilling.length} records</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Billing</button>
-                <ExportImportMenu onExport={handleExportBilling} onImport={handleImportBilling} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Billing</button>
+                    <ExportImportMenu onExport={handleExportBilling} onImport={handleImportBilling} />
+                </div>
             </div>
 
             <div className="table-wrapper">

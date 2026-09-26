@@ -178,7 +178,9 @@ function Reports() {
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder={`Search ${active.label.toLowerCase()}...`} />
                 <span className="apartments-count">{rows.length} records</span>
-                <ExportImportMenu onExport={handleExportActive} />
+                <div className="header-actions">
+                    <ExportImportMenu onExport={handleExportActive} />
+                </div>
             </div>
 
             <div className="report-tabs">

@@ -139,8 +139,10 @@ function Address() {
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search addresses..." />
                 <span className="apartments-count">{filteredAddresses.length} addresses</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Address</button>
-                <ExportImportMenu onExport={handleExportAddresses} onImport={handleImportAddresses} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Address</button>
+                    <ExportImportMenu onExport={handleExportAddresses} onImport={handleImportAddresses} />
+                </div>
             </div>
 
             <div className="table-wrapper">

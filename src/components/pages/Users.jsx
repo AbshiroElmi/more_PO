@@ -141,8 +141,10 @@ function Users() {
                 </h1>
                 <SearchBar value={search} onChange={setSearch} placeholder="Search users..." />
                 <span className="apartments-count">{filteredUsers.length} users</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add User</button>
-                <ExportImportMenu onExport={handleExportUsers} onImport={handleImportUsers} />
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add User</button>
+                    <ExportImportMenu onExport={handleExportUsers} onImport={handleImportUsers} />
+                </div>
             </div>
 
             <div className="table-wrapper">

@@ -117,6 +117,13 @@
     position: relative;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
 .btn-menu {
     display: flex;
     align-items: center;
@@ -193,7 +200,6 @@
 
 /* ─── Add Button ─────────────────────────────────────────────── */
 .btn-add {
-    margin-left: auto;
     display: inline-flex;
     align-items: center;
     gap: 6px;
