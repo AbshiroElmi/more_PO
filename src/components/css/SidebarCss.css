@@ -91,6 +91,14 @@
     width: 22px;
     text-align: center;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-icon svg {
+    width: 16px;
+    height: 16px;
 }
 
 .sidebar ul li a:hover {
