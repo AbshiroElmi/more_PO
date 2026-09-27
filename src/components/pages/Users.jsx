@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Users() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingUserId, setEditingUserId] = useState(null);
+    const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
         user_name: "", pass: "", p_no: ""
@@ -100,18 +103,48 @@ function Users() {
         }
     };
 
+    const handleExportUsers = () => {
+        exportToCSV(users, "users");
+    };
+
+    const handleImportUsers = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/users", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchUsers();
+            alert(`Imported ${rows.length} user(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading users...</div>;
     if (error) return <div className="apartments-page">Error fetching users: {error}</div>;
+
+    const q = search.trim().toLowerCase();
+    const filteredUsers = !q ? users : users.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
 
     return (
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1>
-                    <span className="page-icon">👤</span>
                     Users
                 </h1>
-                <span className="apartments-count">{users.length} users</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add User</button>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search users..." />
+                <span className="apartments-count">{filteredUsers.length} users</span>
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add User</button>
+                    <ExportImportMenu onExport={handleExportUsers} onImport={handleImportUsers} />
+                </div>
             </div>
 
             <div className="table-wrapper">
@@ -125,7 +158,7 @@ function Users() {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
+                        {filteredUsers.map((user) => (
                             <tr key={user.user_id}>
                                 <td className="col-no">{user.user_id}</td>
                                 <td className="col-name">{user.user_name}</td>
@@ -148,7 +181,7 @@ function Users() {
                                 </td>
                             </tr>
                         ))}
-                        {users.length === 0 && (
+                        {filteredUsers.length === 0 && (
                             <tr>
                                 <td colSpan="4" style={{ textAlign: "center" }}>No users found.</td>
                             </tr>

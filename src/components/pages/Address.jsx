@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Address() {
     const [addresses, setAddresses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingAddressId, setEditingAddressId] = useState(null);
+    const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
         district: "", village: ""
@@ -98,18 +101,48 @@ function Address() {
         }
     };
 
+    const handleExportAddresses = () => {
+        exportToCSV(addresses, "address");
+    };
+
+    const handleImportAddresses = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/address", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchAddresses();
+            alert(`Imported ${rows.length} address(es).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading address data...</div>;
     if (error) return <div className="apartments-page">Error fetching address data: {error}</div>;
+
+    const q = search.trim().toLowerCase();
+    const filteredAddresses = !q ? addresses : addresses.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
 
     return (
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1>
-                    <span className="page-icon">📍</span>
                     Address
                 </h1>
-                <span className="apartments-count">{addresses.length} addresses</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Address</button>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search addresses..." />
+                <span className="apartments-count">{filteredAddresses.length} addresses</span>
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Address</button>
+                    <ExportImportMenu onExport={handleExportAddresses} onImport={handleImportAddresses} />
+                </div>
             </div>
 
             <div className="table-wrapper">
@@ -123,7 +156,7 @@ function Address() {
                         </tr>
                     </thead>
                     <tbody>
-                        {addresses.map((address) => (
+                        {filteredAddresses.map((address) => (
                             <tr key={address.add_no}>
                                 <td className="col-no">{address.add_no}</td>
                                 <td className="col-name">{address.district}</td>
@@ -146,7 +179,7 @@ function Address() {
                                 </td>
                             </tr>
                         ))}
-                        {addresses.length === 0 && (
+                        {filteredAddresses.length === 0 && (
                             <tr>
                                 <td colSpan="4" style={{ textAlign: "center" }}>No addresses found.</td>
                             </tr>

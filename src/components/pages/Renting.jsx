@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Renting() {
     const [rentingRecords, setRentingRecords] = useState([]);
@@ -8,6 +10,7 @@ function Renting() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({
         app_no: "", customer: "", price: "", rt_date: "", deposit: "", description: ""
     });
@@ -85,15 +88,46 @@ function Renting() {
         } catch (err) { alert(err.message); }
     };
 
+    const handleExportRenting = () => {
+        exportToCSV(rentingRecords, "renting", ["formattedDate"]);
+    };
+
+    const handleImportRenting = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/renting", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchRenting();
+            alert(`Imported ${rows.length} renting record(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading renting records...</div>;
     if (error) return <div className="apartments-page">Error: {error}</div>;
+
+    const q = search.trim().toLowerCase();
+    const filteredRenting = !q ? rentingRecords : rentingRecords.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
 
     return (
         <div className="apartments-page">
             <div className="apartments-header">
-                <h1><span className="page-icon">🏠</span> Renting</h1>
-                <span className="apartments-count">{rentingRecords.length} records</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Renting</button>
+                <h1> Renting</h1>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search renting records..." />
+                <span className="apartments-count">{filteredRenting.length} records</span>
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Renting</button>
+                    <ExportImportMenu onExport={handleExportRenting} onImport={handleImportRenting} />
+                </div>
             </div>
 
             <div className="table-wrapper">
@@ -111,7 +145,7 @@ function Renting() {
                         </tr>
                     </thead>
                     <tbody>
-                        {rentingRecords.map((record) => (
+                        {filteredRenting.map((record) => (
                             <tr key={record.rt_no}>
                                 <td className="col-no">{record.rt_no}</td>
                                 <td>{record.app_no}</td>
@@ -132,7 +166,7 @@ function Renting() {
                                 </td>
                             </tr>
                         ))}
-                        {rentingRecords.length === 0 && (
+                        {filteredRenting.length === 0 && (
                             <tr><td colSpan="8" style={{ textAlign: "center" }}>No renting records found.</td></tr>
                         )}
                     </tbody>

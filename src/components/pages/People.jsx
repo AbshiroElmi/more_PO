@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function People() {
     const [people, setPeople] = useState([]);
@@ -8,6 +10,7 @@ function People() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingPersonId, setEditingPersonId] = useState(null);
+    const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({ name: "", tell: "" });
 
     const fetchPeople = () => {
@@ -86,18 +89,48 @@ function People() {
         }
     };
 
+    const handleExportPeople = () => {
+        exportToCSV(people, "people");
+    };
+
+    const handleImportPeople = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/people", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchPeople();
+            alert(`Imported ${rows.length} person(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading people...</div>;
     if (error) return <div className="apartments-page">Error fetching people: {error}</div>;
+
+    const q = search.trim().toLowerCase();
+    const filteredPeople = !q ? people : people.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
 
     return (
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1>
-                    <span className="page-icon">👥</span>
                     People
                 </h1>
-                <span className="apartments-count">{people.length} people</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Person</button>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search people..." />
+                <span className="apartments-count">{filteredPeople.length} people</span>
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Person</button>
+                    <ExportImportMenu onExport={handleExportPeople} onImport={handleImportPeople} />
+                </div>
             </div>
 
             <div className="table-wrapper">
@@ -111,7 +144,7 @@ function People() {
                         </tr>
                     </thead>
                     <tbody>
-                        {people.map((person) => (
+                        {filteredPeople.map((person) => (
                             <tr key={person.p_no}>
                                 <td className="col-no">{person.p_no}</td>
                                 <td className="col-name">{person.name}</td>
@@ -132,7 +165,7 @@ function People() {
                                 </td>
                             </tr>
                         ))}
-                        {people.length === 0 && (
+                        {filteredPeople.length === 0 && (
                             <tr>
                                 <td colSpan="4" style={{ textAlign: "center" }}>No people found.</td>
                             </tr>

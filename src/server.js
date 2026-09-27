@@ -9,11 +9,16 @@ app.use(cors(
     ))
 
 let conn=mysql.createConnection({
-    host:"localhost",
+    host:"127.0.0.1",
+    port:3307,
     user:"root",
     password:"",
     database:"apartment_rental"
 })
+
+conn.on("error", (err) => {
+  console.error("MySQL connection error:", err.message);
+});
 
 // Express route to fetch apartments
 app.get("/appartments", (req, res) => {
@@ -37,6 +42,34 @@ app.post("/appartments", (req, res) => {
   conn.query(sql, values, (err, data) => {
     if (err) return res.status(500).json({ error: err.message });
     return res.json({ message: "Apartment added successfully!", id: data.insertId });
+  });
+});
+
+// Express route to update an apartment
+app.put("/appartments/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "UPDATE appartments SET app_name = ?, h_no = ?, rooms = ?, toilets = ?, description = ? WHERE app_no = ?";
+  const values = [
+    req.body.app_name,
+    req.body.h_no,
+    req.body.rooms,
+    req.body.toilets,
+    req.body.description,
+    id
+  ];
+  conn.query(sql, values, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Apartment updated successfully!" });
+  });
+});
+
+// Express route to delete an apartment
+app.delete("/appartments/:id", (req, res) => {
+  const { id } = req.params;
+  const sql = "DELETE FROM appartments WHERE app_no = ?";
+  conn.query(sql, [id], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ message: "Apartment deleted successfully!" });
   });
 });
 

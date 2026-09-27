@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Houses() {
     const [houses, setHouses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingHouseId, setEditingHouseId] = useState(null);
+    const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
         house_name: "", owner: "", add_no: ""
@@ -99,18 +102,48 @@ function Houses() {
         }
     };
 
+    const handleExportHouses = () => {
+        exportToCSV(houses, "houses");
+    };
+
+    const handleImportHouses = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/houses", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchHouses();
+            alert(`Imported ${rows.length} house(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading houses...</div>;
     if (error) return <div className="apartments-page">Error fetching houses: {error}</div>;
+
+    const q = search.trim().toLowerCase();
+    const filteredHouses = !q ? houses : houses.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
 
     return (
         <div className="apartments-page">
             <div className="apartments-header">
                 <h1>
-                    <span className="page-icon">🏘️</span>
                     Houses
                 </h1>
-                <span className="apartments-count">{houses.length} houses</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add House</button>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search houses..." />
+                <span className="apartments-count">{filteredHouses.length} houses</span>
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add House</button>
+                    <ExportImportMenu onExport={handleExportHouses} onImport={handleImportHouses} />
+                </div>
             </div>
 
             <div className="table-wrapper">
@@ -125,7 +158,7 @@ function Houses() {
                         </tr>
                     </thead>
                     <tbody>
-                        {houses.map((house) => (
+                        {filteredHouses.map((house) => (
                             <tr key={house.h_no}>
                                 <td className="col-no">{house.h_no}</td>
                                 <td className="col-name">{house.house_name}</td>
@@ -149,7 +182,7 @@ function Houses() {
                                 </td>
                             </tr>
                         ))}
-                        {houses.length === 0 && (
+                        {filteredHouses.length === 0 && (
                             <tr>
                                 <td colSpan="5" style={{ textAlign: "center" }}>No houses found.</td>
                             </tr>

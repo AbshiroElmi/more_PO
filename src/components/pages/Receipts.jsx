@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
+import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Receipts() {
     const [receipts, setReceipts] = useState([]);
@@ -8,6 +10,7 @@ function Receipts() {
     const [showModal, setShowModal] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
+    const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({ p_no: "", acc_no: "", rt_date: "" });
 
     const fetchReceipts = () => {
@@ -76,15 +79,46 @@ function Receipts() {
         } catch (err) { alert(err.message); }
     };
 
+    const handleExportReceipts = () => {
+        exportToCSV(receipts, "receipts", ["formattedDate"]);
+    };
+
+    const handleImportReceipts = async (file) => {
+        const rows = parseCSV(await file.text());
+        if (rows.length === 0) { alert("No rows found in CSV."); return; }
+        try {
+            for (const row of rows) {
+                await fetch("http://localhost:5000/receipts", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(row)
+                });
+            }
+            fetchReceipts();
+            alert(`Imported ${rows.length} receipt(s).`);
+        } catch (err) {
+            alert("Import failed: " + err.message);
+        }
+    };
+
     if (loading) return <div className="apartments-page">Loading receipts...</div>;
     if (error) return <div className="apartments-page">Error: {error}</div>;
+
+    const q = search.trim().toLowerCase();
+    const filteredReceipts = !q ? receipts : receipts.filter((item) =>
+        Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
+    );
 
     return (
         <div className="apartments-page">
             <div className="apartments-header">
-                <h1><span className="page-icon">🧾</span> Receipts</h1>
-                <span className="apartments-count">{receipts.length} records</span>
-                <button className="btn-add" onClick={handleOpenAddModal}>+ Add Receipt</button>
+                <h1>Receipts</h1>
+                <SearchBar value={search} onChange={setSearch} placeholder="Search receipts..." />
+                <span className="apartments-count">{filteredReceipts.length} records</span>
+                <div className="header-actions">
+                    <button className="btn-add" onClick={handleOpenAddModal}>+ Add Receipt</button>
+                    <ExportImportMenu onExport={handleExportReceipts} onImport={handleImportReceipts} />
+                </div>
             </div>
 
             <div className="table-wrapper">
@@ -99,7 +133,7 @@ function Receipts() {
                         </tr>
                     </thead>
                     <tbody>
-                        {receipts.map((record) => (
+                        {filteredReceipts.map((record) => (
                             <tr key={record.r_no}>
                                 <td className="col-no">{record.r_no}</td>
                                 <td>{record.p_no}</td>
@@ -117,7 +151,7 @@ function Receipts() {
                                 </td>
                             </tr>
                         ))}
-                        {receipts.length === 0 && (
+                        {filteredReceipts.length === 0 && (
                             <tr><td colSpan="5" style={{ textAlign: "center" }}>No receipts found.</td></tr>
                         )}
                     </tbody>
