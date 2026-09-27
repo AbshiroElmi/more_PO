@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
-import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Houses() {
@@ -161,24 +161,14 @@ function Houses() {
                         {filteredHouses.map((house) => (
                             <tr key={house.h_no}>
                                 <td className="col-no">{house.h_no}</td>
-                                <td className="col-name">{house.house_name}</td>
+                                <td className="col-name"><RowAvatar name={house.house_name} /></td>
                                 <td>{house.owner}</td>
                                 <td>{house.add_no}</td>
                                 <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                                    <button 
-                                        className="btn-edit" 
-                                        onClick={() => handleOpenEditModal(house)}
-                                        style={{ marginRight: '8px', padding: '4px 8px', cursor: 'pointer', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px' }}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button 
-                                        className="btn-delete" 
-                                        onClick={() => handleDeleteHouse(house.h_no)}
-                                        style={{ padding: '4px 8px', cursor: 'pointer', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px' }}
-                                    >
-                                        Delete
-                                    </button>
+                                    <RowActions
+                                        onEdit={() => handleOpenEditModal(house)}
+                                        onDelete={() => handleDeleteHouse(house.h_no)}
+                                    />
                                 </td>
                             </tr>
                         ))}

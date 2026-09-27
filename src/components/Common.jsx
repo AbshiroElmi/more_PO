@@ -124,6 +124,46 @@ export const ExportImportMenu = ({ onExport, onImport }) => {
   );
 };
 
+/* ─── Frappe-style row helpers ───────────────────────────────── */
+const avatarColors = ["#7C3AED", "#2563EB", "#059669", "#D97706", "#DB2777", "#0891B2", "#DC2626", "#4F46E5"];
+
+const getAvatarColor = (name) => {
+  const str = name || "?";
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  return avatarColors[Math.abs(hash) % avatarColors.length];
+};
+
+const getInitials = (name) => {
+  if (!name) return "?";
+  const parts = String(name).trim().split(/\s+/);
+  return parts.length === 1 ? parts[0].slice(0, 2) : parts[0][0] + parts[1][0];
+};
+
+export const RowAvatar = ({ name }) => (
+  <div className="row-avatar">
+    <span className="avatar-circle" style={{ background: getAvatarColor(name) }}>
+      {getInitials(name)}
+    </span>
+    <span>{name}</span>
+  </div>
+);
+
+export const RowActions = ({ onEdit, onDelete }) => (
+  <div className="row-actions">
+    <button className="icon-btn" aria-label="Edit" onClick={onEdit}>
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M13.5 3.5l3 3L7 16l-4 1 1-4 9.5-9.5z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+    <button className="icon-btn danger" aria-label="Delete" onClick={onDelete}>
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 6h10M8.5 6V4.5h3V6M6 6l.7 9.5a1 1 0 001 .9h4.6a1 1 0 001-.9L14 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  </div>
+);
+
 export const Table = ({ data }) => {
   if (!data || data.length === 0) return null;
 const h = Object.keys(data)

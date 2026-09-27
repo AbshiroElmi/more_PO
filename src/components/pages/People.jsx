@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
-import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function People() {
@@ -147,21 +147,15 @@ function People() {
                         {filteredPeople.map((person) => (
                             <tr key={person.p_no}>
                                 <td className="col-no">{person.p_no}</td>
-                                <td className="col-name">{person.name}</td>
+                                <td className="col-name">
+                                    <RowAvatar name={person.name} />
+                                </td>
                                 <td>{person.tell}</td>
                                 <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                    <button
-                                        onClick={() => handleOpenEditModal(person)}
-                                        style={{ marginRight: "8px", padding: "4px 8px", cursor: "pointer", background: "#3b82f6", color: "white", border: "none", borderRadius: "4px" }}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeletePerson(person.p_no)}
-                                        style={{ padding: "4px 8px", cursor: "pointer", background: "#ef4444", color: "white", border: "none", borderRadius: "4px" }}
-                                    >
-                                        Delete
-                                    </button>
+                                    <RowActions
+                                        onEdit={() => handleOpenEditModal(person)}
+                                        onDelete={() => handleDeletePerson(person.p_no)}
+                                    />
                                 </td>
                             </tr>
                         ))}

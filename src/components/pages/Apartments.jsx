@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
-import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Apartments() {
@@ -169,7 +169,7 @@ function Apartments() {
                             <tr key={apt.app_no || index}>
                                 {Object.keys(apartments[0]).map((key) => {
                                     if (key === 'app_no') return <td key={key} className="col-no">{apt[key]}</td>;
-                                    if (key === 'app_name') return <td key={key} className="col-name">{apt[key]}</td>;
+                                    if (key === 'app_name') return <td key={key} className="col-name"><RowAvatar name={apt[key]} /></td>;
                                     if (key === 'h_no') return <td key={key}><span className="h-badge">{apt[key]}</span></td>;
                                     if (key === 'rooms') return <td key={key}><span className="stat-pill">🛏 {apt[key]}</span></td>;
                                     if (key === 'toilets') return <td key={key}><span className="stat-pill">🚿 {apt[key]}</span></td>;
@@ -186,20 +186,10 @@ function Apartments() {
                                     return <td key={key}>{apt[key]}</td>;
                                 })}
                                 <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
-                                    <button
-                                        className="btn-edit"
-                                        onClick={() => handleOpenEditModal(apt)}
-                                        style={{ marginRight: '8px', padding: '4px 8px', cursor: 'pointer', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '4px' }}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="btn-delete"
-                                        onClick={() => handleDeleteApartment(apt.app_no)}
-                                        style={{ padding: '4px 8px', cursor: 'pointer', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px' }}
-                                    >
-                                        Delete
-                                    </button>
+                                    <RowActions
+                                        onEdit={() => handleOpenEditModal(apt)}
+                                        onDelete={() => handleDeleteApartment(apt.app_no)}
+                                    />
                                 </td>
                             </tr>
                         ))}

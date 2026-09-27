@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Apartments.css";
-import { SearchBar, ExportImportMenu } from "../Common.jsx";
+import { SearchBar, ExportImportMenu, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 
 function Receipts() {
@@ -140,14 +140,10 @@ function Receipts() {
                                 <td>{record.acc_no}</td>
                                 <td>{record.formattedDate}</td>
                                 <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                                    <button onClick={() => handleOpenEditModal(record)}
-                                        style={{ marginRight: "8px", padding: "4px 8px", cursor: "pointer", background: "#3b82f6", color: "white", border: "none", borderRadius: "4px" }}>
-                                        Edit
-                                    </button>
-                                    <button onClick={() => handleDelete(record.r_no)}
-                                        style={{ padding: "4px 8px", cursor: "pointer", background: "#ef4444", color: "white", border: "none", borderRadius: "4px" }}>
-                                        Delete
-                                    </button>
+                                    <RowActions
+                                        onEdit={() => handleOpenEditModal(record)}
+                                        onDelete={() => handleDelete(record.r_no)}
+                                    />
                                 </td>
                             </tr>
                         ))}
