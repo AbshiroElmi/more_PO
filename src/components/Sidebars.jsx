@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import menuIcon from "../assets/images/menu.png";
 import { Btn } from "./Common.jsx";
 
@@ -92,22 +93,35 @@ const ReportsIcon = () => (
     </svg>
 );
 
-const NAV_ITEMS = [
-    { to: "/dashboard",  icon: <DashboardIcon />,  label: "Dashboard" },
-    { to: "/apartments", icon: <ApartmentsIcon />, label: "Apartments" },
-    { to: "/houses",     icon: <HousesIcon />,     label: "Houses" },
-    { to: "/people",     icon: <PeopleIcon />,     label: "People" },
-    { to: "/renting",    icon: <RentingIcon />,    label: "Renting" },
-    { to: "/billing",    icon: <BillingIcon />,    label: "Billing" },
-    { to: "/receipts",   icon: <ReceiptsIcon />,   label: "Receipts" },
-    { to: "/accounts",   icon: <AccountsIcon />,   label: "Accounts" },
-    { to: "/address",    icon: <AddressIcon />,    label: "Address" },
-    { to: "/users",      icon: <UsersIcon />,      label: "Users" },
-    { to: "/reports",    icon: <ReportsIcon />,    label: "Reports" },
-];
+const ICON_MAP = {
+    DashboardIcon: <DashboardIcon />,
+    ApartmentsIcon: <ApartmentsIcon />,
+    HousesIcon: <HousesIcon />,
+    PeopleIcon: <PeopleIcon />,
+    RentingIcon: <RentingIcon />,
+    BillingIcon: <BillingIcon />,
+    ReceiptsIcon: <ReceiptsIcon />,
+    AccountsIcon: <AccountsIcon />,
+    AddressIcon: <AddressIcon />,
+    UsersIcon: <UsersIcon />,
+    ReportsIcon: <ReportsIcon />,
+};
 
 function Sidebars() {
     const navigate = useNavigate();
+    const [navItems, setNavItems] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/sidebars")
+            .then(res => res.json())
+            .then(data => {
+                const activeItems = data
+                    .filter(item => item.is_active === 1 || item.is_active === true || item.is_active === "1")
+                    .sort((a, b) => a.sort_order - b.sort_order);
+                setNavItems(activeItems);
+            })
+            .catch(err => alert("Error fetching sidebars: " + err));
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem("isAuthenticated");
@@ -129,10 +143,10 @@ function Sidebars() {
 
             {/* Nav */}
             <ul>
-                {NAV_ITEMS.map(item => (
-                    <li key={item.to}>
-                        <NavLink to={item.to}>
-                            <span className="nav-icon">{item.icon}</span>
+                {navItems.map(item => (
+                    <li key={item.id}>
+                        <NavLink to={item.path}>
+                            <span className="nav-icon">{ICON_MAP[item.icon_name] || <DashboardIcon />}</span>
                             <span>{item.label}</span>
                         </NavLink>
                     </li>

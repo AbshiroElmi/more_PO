@@ -475,4 +475,14 @@ app.get("/dashboard/stats", (req, res) => {
   });
 });
 
+// Express route to fetch sidebars
+app.get("/sidebars", (req, res) => {
+  const sql = "SELECT * FROM sidebars";
+  conn.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
+});
+
+
 app.listen(5000)
