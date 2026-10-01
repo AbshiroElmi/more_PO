@@ -150,10 +150,13 @@ function Accounts() {
                 <table className="apt-table">
                     <thead>
                         <tr>
-                            <th>Account No.</th>
-                            <th>Account Name</th>
-                            <th>Institution</th>
-                            <th>Balance</th>
+                            {filteredAccounts.length > 0 &&
+                                Object.keys(filteredAccounts[0]).map((key) => (
+                                    <th key={key}>
+                                        {key.replace(/_/g, " ").toUpperCase()}
+                                    </th>
+                                ))
+                            }
                             <th style={{ textAlign: 'center' }}>Actions</th>
                         </tr>
                     </thead>
