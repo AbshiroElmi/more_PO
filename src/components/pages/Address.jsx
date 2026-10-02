@@ -3,6 +3,7 @@ import "../css/Apartments.css"; // Reuse the same CSS for the table and modal la
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Address() {
     const formFields = useTableInfo("address");
@@ -18,11 +19,7 @@ function Address() {
     const [formData, setFormData] = useState({});
 
     const fetchAddresses = () => {
-        fetch("http://localhost:5000/address")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData("address")
             .then(data => {
                 setAddresses(data);
                 setLoading(false);
@@ -59,20 +56,10 @@ function Address() {
     const handleSaveAddress = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode 
-                ? `http://localhost:5000/address/${editingAddressId}` 
-                : "http://localhost:5000/address";
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? 'update' : 'add'} address`);
+            if (isEditMode) {
+                await fetchData("address", { method: "PUT", id: editingAddressId, body: formData });
+            } else {
+                await fetchData("address", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchAddresses(); // Refresh the list
@@ -85,13 +72,7 @@ function Address() {
         if (!window.confirm("Are you sure you want to delete this address?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/address/${id}`, {
-                method: "DELETE"
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Failed to delete address");
-            }
+            await fetchData("address", { method: "DELETE", id });
             fetchAddresses(); // Refresh the list
         } catch (err) {
             alert(err.message);
@@ -107,11 +88,7 @@ function Address() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/address", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("address", { method: "POST", body: row });
             }
             fetchAddresses();
             alert(`Imported ${rows.length} address(es).`);

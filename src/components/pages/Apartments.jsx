@@ -3,6 +3,7 @@ import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Apartments() {
     const formFields = useTableInfo("appartments");
@@ -16,13 +17,7 @@ function Apartments() {
     const [formData, setFormData] = useState({});
 
     const fetchApartments = () => {
-        fetch("http://localhost:5000/appartments")
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return res.json();
-            })
+        fetchData("appartments")
             .then(data => {
                 setApartments(data);
                 setLoading(false);
@@ -59,19 +54,10 @@ function Apartments() {
     const handleSaveApartment = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode
-                ? `http://localhost:5000/appartments/${editingApartmentId}`
-                : "http://localhost:5000/appartments";
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? "update" : "add"} apartment`);
+            if (isEditMode) {
+                await fetchData("appartments", { method: "PUT", id: editingApartmentId, body: formData });
+            } else {
+                await fetchData("appartments", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchApartments();
@@ -84,13 +70,7 @@ function Apartments() {
         if (!window.confirm("Are you sure you want to delete this apartment?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/appartments/${id}`, {
-                method: "DELETE"
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Failed to delete apartment");
-            }
+            await fetchData("appartments", { method: "DELETE", id });
             fetchApartments();
         } catch (err) {
             alert(err.message);
@@ -106,11 +86,7 @@ function Apartments() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/appartments", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("appartments", { method: "POST", body: row });
             }
             fetchApartments();
             alert(`Imported ${rows.length} apartment(s).`);

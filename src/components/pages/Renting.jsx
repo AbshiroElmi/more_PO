@@ -3,6 +3,7 @@ import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Renting() {
     const formFields = useTableInfo("renting");
@@ -16,11 +17,7 @@ function Renting() {
     const [formData, setFormData] = useState({});
 
     const fetchRenting = () => {
-        fetch("http://localhost:5000/renting")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData("renting")
             .then(data => {
                 const formatted = data.map(item => {
                     let d = new Date(item.rt_date);
@@ -56,16 +53,10 @@ function Renting() {
     const handleSave = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode ? `http://localhost:5000/renting/${editingId}` : "http://localhost:5000/renting";
-            const method = isEditMode ? "PUT" : "POST";
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? "update" : "add"} renting record`);
+            if (isEditMode) {
+                await fetchData("renting", { method: "PUT", id: editingId, body: formData });
+            } else {
+                await fetchData("renting", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchRenting();
@@ -75,8 +66,7 @@ function Renting() {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this renting record?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/renting/${id}`, { method: "DELETE" });
-            if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || "Failed to delete"); }
+            await fetchData("renting", { method: "DELETE", id });
             fetchRenting();
         } catch (err) { alert(err.message); }
     };
@@ -90,11 +80,7 @@ function Renting() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/renting", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("renting", { method: "POST", body: row });
             }
             fetchRenting();
             alert(`Imported ${rows.length} renting record(s).`);

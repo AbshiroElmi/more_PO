@@ -3,6 +3,7 @@ import "../css/Apartments.css";
 import "../css/Reports.css";
 import { SearchBar, ExportImportMenu } from "../Common.jsx";
 import { exportToCSV } from "../csvUtils.js";
+import { fetchData } from "../api.js";
 
 function formatDate(raw) {
     if (!raw) return "—";
@@ -19,7 +20,7 @@ const REPORTS = [
     {
         key: "apartments",
         label: "Apartments",
-        endpoint: "http://localhost:5000/appartments",
+        table: "appartments",
         rowKey: "app_no",
         columns: [
             { header: "App No.", key: "app_no", className: "col-no" },
@@ -33,7 +34,7 @@ const REPORTS = [
     {
         key: "houses",
         label: "Houses",
-        endpoint: "http://localhost:5000/houses",
+        table: "houses",
         rowKey: "h_no",
         columns: [
             { header: "House No.", key: "h_no", className: "col-no" },
@@ -45,7 +46,7 @@ const REPORTS = [
     {
         key: "people",
         label: "People",
-        endpoint: "http://localhost:5000/people",
+        table: "people",
         rowKey: "p_no",
         columns: [
             { header: "Person No.", key: "p_no", className: "col-no" },
@@ -56,7 +57,7 @@ const REPORTS = [
     {
         key: "renting",
         label: "Renting",
-        endpoint: "http://localhost:5000/renting",
+        table: "renting",
         rowKey: "rt_no",
         columns: [
             { header: "Rent No.", key: "rt_no", className: "col-no" },
@@ -71,7 +72,7 @@ const REPORTS = [
     {
         key: "billing",
         label: "Billing",
-        endpoint: "http://localhost:5000/billing",
+        table: "billing",
         rowKey: "bl_no",
         columns: [
             { header: "Bill No.", key: "bl_no", className: "col-no" },
@@ -84,7 +85,7 @@ const REPORTS = [
     {
         key: "receipts",
         label: "Receipts",
-        endpoint: "http://localhost:5000/receipts",
+        table: "receipts",
         rowKey: "r_no",
         columns: [
             { header: "Receipt No.", key: "r_no", className: "col-no" },
@@ -96,7 +97,7 @@ const REPORTS = [
     {
         key: "accounts",
         label: "Accounts",
-        endpoint: "http://localhost:5000/accounts",
+        table: "accounts",
         rowKey: "acc_no",
         columns: [
             { header: "Account No.", key: "acc_no", className: "col-no" },
@@ -108,7 +109,7 @@ const REPORTS = [
     {
         key: "address",
         label: "Address",
-        endpoint: "http://localhost:5000/address",
+        table: "address",
         rowKey: "add_no",
         columns: [
             { header: "Address No.", key: "add_no", className: "col-no" },
@@ -119,7 +120,7 @@ const REPORTS = [
     {
         key: "users",
         label: "Users",
-        endpoint: "http://localhost:5000/users",
+        table: "users",
         rowKey: "user_id",
         columns: [
             { header: "User ID", key: "user_id", className: "col-no" },
@@ -141,11 +142,7 @@ function Reports() {
         if (cache[activeKey] !== undefined || errors[activeKey]) return;
 
         let cancelled = false;
-        fetch(active.endpoint)
-            .then((res) => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData(active.table)
             .then((data) => {
                 if (!cancelled) setCache((prev) => ({ ...prev, [activeKey]: data }));
             })

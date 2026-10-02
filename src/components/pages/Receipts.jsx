@@ -3,6 +3,7 @@ import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Receipts() {
     const formFields = useTableInfo("receipts");
@@ -16,11 +17,7 @@ function Receipts() {
     const [formData, setFormData] = useState({});
 
     const fetchReceipts = () => {
-        fetch("http://localhost:5000/receipts")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData("receipts")
             .then(data => {
                 const formatted = data.map(item => {
                     let d = new Date(item.rt_date);
@@ -56,16 +53,10 @@ function Receipts() {
     const handleSave = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode ? `http://localhost:5000/receipts/${editingId}` : "http://localhost:5000/receipts";
-            const method = isEditMode ? "PUT" : "POST";
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? "update" : "add"} receipt`);
+            if (isEditMode) {
+                await fetchData("receipts", { method: "PUT", id: editingId, body: formData });
+            } else {
+                await fetchData("receipts", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchReceipts();
@@ -75,8 +66,7 @@ function Receipts() {
     const handleDelete = async (id) => {
         if (!window.confirm("Are you sure you want to delete this receipt?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/receipts/${id}`, { method: "DELETE" });
-            if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || "Failed to delete"); }
+            await fetchData("receipts", { method: "DELETE", id });
             fetchReceipts();
         } catch (err) { alert(err.message); }
     };
@@ -90,11 +80,7 @@ function Receipts() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/receipts", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("receipts", { method: "POST", body: row });
             }
             fetchReceipts();
             alert(`Imported ${rows.length} receipt(s).`);

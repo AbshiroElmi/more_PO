@@ -3,6 +3,7 @@ import "../css/Apartments.css"; // Reuse the same CSS for the table and modal la
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Houses() {
     const formFields = useTableInfo("houses");
@@ -18,11 +19,7 @@ function Houses() {
     const [formData, setFormData] = useState({});
 
     const fetchHouses = () => {
-        fetch("http://localhost:5000/houses")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData("houses")
             .then(data => {
                 setHouses(data);
                 setLoading(false);
@@ -59,20 +56,10 @@ function Houses() {
     const handleSaveHouse = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode 
-                ? `http://localhost:5000/houses/${editingHouseId}` 
-                : "http://localhost:5000/houses";
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? 'update' : 'add'} house`);
+            if (isEditMode) {
+                await fetchData("houses", { method: "PUT", id: editingHouseId, body: formData });
+            } else {
+                await fetchData("houses", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchHouses(); // Refresh the list
@@ -85,13 +72,7 @@ function Houses() {
         if (!window.confirm("Are you sure you want to delete this house?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/houses/${id}`, {
-                method: "DELETE"
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Failed to delete house");
-            }
+            await fetchData("houses", { method: "DELETE", id });
             fetchHouses(); // Refresh the list
         } catch (err) {
             alert(err.message);
@@ -107,11 +88,7 @@ function Houses() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/houses", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("houses", { method: "POST", body: row });
             }
             fetchHouses();
             alert(`Imported ${rows.length} house(s).`);

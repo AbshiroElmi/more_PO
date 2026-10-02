@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import menuIcon from "../assets/images/menu.png";
 import { Btn } from "./Common.jsx";
+import { fetchData } from "./api.js";
 
 const iconProps = { viewBox: "0 0 20 20", fill: "none", xmlns: "http://www.w3.org/2000/svg" };
 const s = { stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -112,8 +113,7 @@ function Sidebars() {
     const [navItems, setNavItems] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/sidebars")
-            .then(res => res.json())
+        fetchData("sidebars")
             .then(data => {
                 const activeItems = data
                     .filter(item => item.is_active === 1 || item.is_active === true || item.is_active === "1")

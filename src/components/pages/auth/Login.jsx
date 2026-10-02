@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Common, { Btn } from "../../Common.jsx";
 import menuIcon from "../../../assets/images/menu.png";
 import "../../css/Login.css";
+import { fetchData } from "../../api.js";
 
 function Login() {
     const [username, setUsername] = useState("");
@@ -15,15 +16,10 @@ function Login() {
         if (!username && !password) return;
 
         try {
-            const response = await fetch("http://localhost:5000/login", {
+            const data = await fetchData("/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username, password }),
+                body: { username, password },
             });
-
-            const data = await response.json();
 
             if (data.success) {
                 localStorage.setItem("isAuthenticated", "true");
@@ -38,7 +34,9 @@ function Login() {
             }
         } catch (error) {
             console.error("Login error:", error);
-            alert("An error occurred during login. Please try again.");
+            setUsername("");
+            setPassword("");
+            alert("Invalid username or password");
         }
     };
 

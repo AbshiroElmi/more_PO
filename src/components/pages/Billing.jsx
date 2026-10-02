@@ -3,6 +3,7 @@ import "../css/Apartments.css"; // Reuse the same CSS for the table and modal la
 import { SearchBar, ExportImportMenu, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Billing() {
     const formFields = useTableInfo("billing");
@@ -18,11 +19,7 @@ function Billing() {
     const [formData, setFormData] = useState({});
 
     const fetchBillingRecords = () => {
-        fetch("http://localhost:5000/billing")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData("billing")
             .then(data => {
                 // Format dates to YYYY-MM-DD for input fields later
                 const formattedData = data.map(item => {
@@ -67,20 +64,10 @@ function Billing() {
     const handleSaveBilling = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode 
-                ? `http://localhost:5000/billing/${editingBillingId}` 
-                : "http://localhost:5000/billing";
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? 'update' : 'add'} billing record`);
+            if (isEditMode) {
+                await fetchData("billing", { method: "PUT", id: editingBillingId, body: formData });
+            } else {
+                await fetchData("billing", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchBillingRecords(); // Refresh the list
@@ -93,13 +80,7 @@ function Billing() {
         if (!window.confirm("Are you sure you want to delete this billing record?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/billing/${id}`, {
-                method: "DELETE"
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Failed to delete billing record");
-            }
+            await fetchData("billing", { method: "DELETE", id });
             fetchBillingRecords(); // Refresh the list
         } catch (err) {
             alert(err.message);
@@ -115,11 +96,7 @@ function Billing() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/billing", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("billing", { method: "POST", body: row });
             }
             fetchBillingRecords();
             alert(`Imported ${rows.length} billing record(s).`);

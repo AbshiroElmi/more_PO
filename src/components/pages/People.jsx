@@ -3,9 +3,12 @@ import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
+
+const TABLE = "people";
 
 function People() {
-    const formFields = useTableInfo("people");
+    const formFields = useTableInfo(TABLE);
     const [people, setPeople] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -15,23 +18,19 @@ function People() {
     const [search, setSearch] = useState("");
     const [formData, setFormData] = useState({});
 
-    const fetchPeople = () => {
-        fetch("http://localhost:5000/people")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
-            .then(data => {
+    const load = () => {
+        fetchData(TABLE)
+            .then((data) => {
                 setPeople(data);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch((err) => {
                 setError(err.message);
                 setLoading(false);
             });
     };
 
-    useEffect(() => { fetchPeople(); }, []);
+    useEffect(() => { load(); }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -55,23 +54,13 @@ function People() {
     const handleSavePerson = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode
-                ? `http://localhost:5000/people/${editingPersonId}`
-                : "http://localhost:5000/people";
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? "update" : "add"} person`);
+            if (isEditMode) {
+                await fetchData(TABLE, { method: "PUT", id: editingPersonId, body: formData });
+            } else {
+                await fetchData(TABLE, { method: "POST", body: formData });
             }
             setShowModal(false);
-            fetchPeople();
+            load();
         } catch (err) {
             alert(err.message);
         }
@@ -80,12 +69,8 @@ function People() {
     const handleDeletePerson = async (id) => {
         if (!window.confirm("Are you sure you want to delete this person?")) return;
         try {
-            const res = await fetch(`http://localhost:5000/people/${id}`, { method: "DELETE" });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Failed to delete person");
-            }
-            fetchPeople();
+            await fetchData(TABLE, { method: "DELETE", id });
+            load();
         } catch (err) {
             alert(err.message);
         }
@@ -100,13 +85,9 @@ function People() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/people", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData(TABLE, { method: "POST", body: row });
             }
-            fetchPeople();
+            load();
             alert(`Imported ${rows.length} person(s).`);
         } catch (err) {
             alert("Import failed: " + err.message);

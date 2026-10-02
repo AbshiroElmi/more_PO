@@ -1,16 +1,9 @@
 import { useState, useEffect } from "react";
+import { fetchData } from "./api.js";
 
 /** Fetch tableinfo rows for one tablename and pass them to setData */
-export function getData(url, tablename, setData) {
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ tablename }),
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error("Failed to load tableinfo");
-      return res.json();
-    })
+export function getData(tablename, setData) {
+  fetchData("/tables", { method: "POST", body: { tablename } })
     .then((data) => setData(Array.isArray(data) ? data : []))
     .catch((err) => {
       console.error(err);
@@ -24,7 +17,7 @@ export function useTableInfo(tablename) {
 
   useEffect(() => {
     if (!tablename) return;
-    getData("http://localhost:5000/tables", tablename, setFields);
+    getData(tablename, setFields);
   }, [tablename]);
 
   return fields;

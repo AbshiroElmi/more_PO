@@ -3,6 +3,7 @@ import "../css/Apartments.css"; // Reuse the same CSS for the table and modal la
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Users() {
     const formFields = useTableInfo("users");
@@ -18,11 +19,7 @@ function Users() {
     const [formData, setFormData] = useState({});
 
     const fetchUsers = () => {
-        fetch("http://localhost:5000/users")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData("users")
             .then(data => {
                 setUsers(data);
                 setLoading(false);
@@ -59,20 +56,10 @@ function Users() {
     const handleSaveUser = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode 
-                ? `http://localhost:5000/users/${editingUserId}` 
-                : "http://localhost:5000/users";
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? 'update' : 'add'} user`);
+            if (isEditMode) {
+                await fetchData("users", { method: "PUT", id: editingUserId, body: formData });
+            } else {
+                await fetchData("users", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchUsers(); // Refresh the list
@@ -85,13 +72,7 @@ function Users() {
         if (!window.confirm("Are you sure you want to delete this user?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/users/${id}`, {
-                method: "DELETE"
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Failed to delete user");
-            }
+            await fetchData("users", { method: "DELETE", id });
             fetchUsers(); // Refresh the list
         } catch (err) {
             alert(err.message);
@@ -107,11 +88,7 @@ function Users() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/users", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("users", { method: "POST", body: row });
             }
             fetchUsers();
             alert(`Imported ${rows.length} user(s).`);

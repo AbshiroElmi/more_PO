@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../css/Dashboard.css";
+import { fetchData } from "../api.js";
 
 function StatCard({ icon, label, value, accent, sub }) {
     return (
@@ -27,8 +28,7 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:5000/dashboard/stats")
-            .then(r => r.json())
+        fetchData("/dashboard/stats")
             .then(d => { setStats(d); setLoading(false); })
             .catch(() => setLoading(false));
     }, []);

@@ -3,6 +3,7 @@ import "../css/Apartments.css"; // Reuse the same CSS for the table and modal la
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
 import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
+import { fetchData } from "../api.js";
 
 function Accounts() {
     const formFields = useTableInfo("accounts");
@@ -18,11 +19,7 @@ function Accounts() {
     const [formData, setFormData] = useState({});
 
     const fetchAccounts = () => {
-        fetch("http://localhost:5000/accounts")
-            .then(res => {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-            })
+        fetchData("accounts")
             .then(data => {
                 setAccounts(data);
                 setLoading(false);
@@ -59,20 +56,10 @@ function Accounts() {
     const handleSaveAccount = async (e) => {
         e.preventDefault();
         try {
-            const url = isEditMode 
-                ? `http://localhost:5000/accounts/${editingAccountId}` 
-                : "http://localhost:5000/accounts";
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(url, {
-                method: method,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || `Failed to ${isEditMode ? 'update' : 'add'} account`);
+            if (isEditMode) {
+                await fetchData("accounts", { method: "PUT", id: editingAccountId, body: formData });
+            } else {
+                await fetchData("accounts", { method: "POST", body: formData });
             }
             setShowModal(false);
             fetchAccounts(); // Refresh the list
@@ -85,13 +72,7 @@ function Accounts() {
         if (!window.confirm("Are you sure you want to delete this account?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/accounts/${id}`, {
-                method: "DELETE"
-            });
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                throw new Error(errData.error || "Failed to delete account");
-            }
+            await fetchData("accounts", { method: "DELETE", id });
             fetchAccounts(); // Refresh the list
         } catch (err) {
             alert(err.message);
@@ -107,11 +88,7 @@ function Accounts() {
         if (rows.length === 0) { alert("No rows found in CSV."); return; }
         try {
             for (const row of rows) {
-                await fetch("http://localhost:5000/accounts", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(row)
-                });
+                await fetchData("accounts", { method: "POST", body: row });
             }
             fetchAccounts();
             alert(`Imported ${rows.length} account(s).`);
