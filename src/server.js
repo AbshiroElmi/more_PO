@@ -9,8 +9,8 @@ app.use(cors(
     ))
 
 let conn=mysql.createConnection({
-    host:"127.0.0.1",
-    port:3307,
+    host:"localhost",
+    port:3306,
     user:"root",
     password:"",
     database:"apartment_rental"
@@ -18,6 +18,24 @@ let conn=mysql.createConnection({
 
 conn.on("error", (err) => {
   console.error("MySQL connection error:", err.message);
+});
+
+// Read form field metadata from tableinfo by tablename
+app.post("/tables", (req, res) => {
+  const { tablename } = req.body;
+  if (!tablename) {
+    return res.status(400).json({ error: "tablename is required" });
+  }
+  const sql = `
+    SELECT key1 AS \`key\`, label, type, \`table\` AS magac, placeholder
+    FROM tableinfo
+    WHERE tablename = ?
+    ORDER BY tid
+  `;
+  conn.query(sql, [tablename], (err, data) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json(data);
+  });
 });
 
 // Express route to fetch apartments

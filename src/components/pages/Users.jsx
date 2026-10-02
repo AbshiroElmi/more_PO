@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Users() {
+    const formFields = useTableInfo("users");
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,9 +15,7 @@ function Users() {
     const [editingUserId, setEditingUserId] = useState(null);
     const [search, setSearch] = useState("");
 
-    const [formData, setFormData] = useState({
-        user_name: "", pass: "", p_no: ""
-    });
+    const [formData, setFormData] = useState({});
 
     const fetchUsers = () => {
         fetch("http://localhost:5000/users")
@@ -45,19 +45,14 @@ function Users() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingUserId(null);
-        setFormData({ user_name: "", pass: "", p_no: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (user) => {
         setIsEditMode(true);
         setEditingUserId(user.user_id);
-        // Pre-fill form data (we assume pass might be empty, let user re-type or just load empty if not sent from server, but our GET doesn't fetch pass, so it will be empty initially for edit)
-        setFormData({ 
-            user_name: user.user_name || "", 
-            pass: "", // Not fetched from server for security, must be re-entered
-            p_no: user.p_no || "" 
-        });
+        setFormData({ ...formFromRecord(formFields, user), pass: "" });
         setShowModal(true);
     };
 
@@ -185,30 +180,7 @@ function Users() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit User" : "Add New User"}</h2>
                         <form className="modal-form" onSubmit={handleSaveUser}>
-                            <input 
-                                type="text" 
-                                name="user_name" 
-                                placeholder="Username" 
-                                value={formData.user_name} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="password" 
-                                name="pass" 
-                                placeholder="Password" 
-                                value={formData.pass} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="number" 
-                                name="p_no" 
-                                placeholder="Phone No / PIN" 
-                                value={formData.p_no} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
 
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>

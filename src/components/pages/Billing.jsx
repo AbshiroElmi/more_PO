@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
 import { SearchBar, ExportImportMenu, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Billing() {
+    const formFields = useTableInfo("billing");
     const [billingRecords, setBillingRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,9 +15,7 @@ function Billing() {
     const [editingBillingId, setEditingBillingId] = useState(null);
     const [search, setSearch] = useState("");
 
-    const [formData, setFormData] = useState({
-        rt_no: "", amount: "", bt_date: "", description: ""
-    });
+    const [formData, setFormData] = useState({});
 
     const fetchBillingRecords = () => {
         fetch("http://localhost:5000/billing")
@@ -53,19 +53,14 @@ function Billing() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingBillingId(null);
-        setFormData({ rt_no: "", amount: "", bt_date: "", description: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (record) => {
         setIsEditMode(true);
         setEditingBillingId(record.bl_no);
-        setFormData({ 
-            rt_no: record.rt_no || "", 
-            amount: record.amount || "",
-            bt_date: record.formattedDate || "",
-            description: record.description || ""
-        });
+        setFormData(formFromRecord(formFields, { ...record, bt_date: record.formattedDate || record.bt_date }));
         setShowModal(true);
     };
 
@@ -195,38 +190,7 @@ function Billing() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit Billing Record" : "Add New Billing Record"}</h2>
                         <form className="modal-form" onSubmit={handleSaveBilling}>
-                            <input 
-                                type="number" 
-                                name="rt_no" 
-                                placeholder="Renting No." 
-                                value={formData.rt_no} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="number" 
-                                step="0.01"
-                                name="amount" 
-                                placeholder="Amount" 
-                                value={formData.amount} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="date" 
-                                name="bt_date" 
-                                placeholder="Date" 
-                                value={formData.bt_date} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <textarea 
-                                name="description" 
-                                placeholder="Description" 
-                                value={formData.description} 
-                                onChange={handleInputChange} 
-                                rows="3"
-                            ></textarea>
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
 
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>

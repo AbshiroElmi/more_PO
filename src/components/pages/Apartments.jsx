@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Apartments() {
+    const formFields = useTableInfo("appartments");
     const [apartments, setApartments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -11,9 +13,7 @@ function Apartments() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingApartmentId, setEditingApartmentId] = useState(null);
     const [search, setSearch] = useState("");
-    const [formData, setFormData] = useState({
-        app_name: "", h_no: "", rooms: "", toilets: "", description: ""
-    });
+    const [formData, setFormData] = useState({});
 
     const fetchApartments = () => {
         fetch("http://localhost:5000/appartments")
@@ -45,20 +45,14 @@ function Apartments() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingApartmentId(null);
-        setFormData({ app_name: "", h_no: "", rooms: "", toilets: "", description: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (apt) => {
         setIsEditMode(true);
         setEditingApartmentId(apt.app_no);
-        setFormData({
-            app_name: apt.app_name || "",
-            h_no: apt.h_no || "",
-            rooms: apt.rooms || "",
-            toilets: apt.toilets || "",
-            description: apt.description || ""
-        });
+        setFormData(formFromRecord(formFields, apt));
         setShowModal(true);
     };
 
@@ -208,11 +202,7 @@ function Apartments() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit Apartment" : "Add New Apartment"}</h2>
                         <form className="modal-form" onSubmit={handleSaveApartment}>
-                            <input type="text" name="app_name" placeholder="Apartment Name" value={formData.app_name} onChange={handleInputChange} required />
-                            <input type="number" name="h_no" placeholder="House No." value={formData.h_no} onChange={handleInputChange} required />
-                            <input type="number" name="rooms" placeholder="Rooms" value={formData.rooms} onChange={handleInputChange} required />
-                            <input type="number" name="toilets" placeholder="Toilets" value={formData.toilets} onChange={handleInputChange} required />
-                            <textarea name="description" placeholder="Description" rows="3" value={formData.description} onChange={handleInputChange}></textarea>
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
 
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>

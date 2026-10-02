@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function People() {
+    const formFields = useTableInfo("people");
     const [people, setPeople] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -11,7 +13,7 @@ function People() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingPersonId, setEditingPersonId] = useState(null);
     const [search, setSearch] = useState("");
-    const [formData, setFormData] = useState({ name: "", tell: "" });
+    const [formData, setFormData] = useState({});
 
     const fetchPeople = () => {
         fetch("http://localhost:5000/people")
@@ -39,14 +41,14 @@ function People() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingPersonId(null);
-        setFormData({ name: "", tell: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (person) => {
         setIsEditMode(true);
         setEditingPersonId(person.p_no);
-        setFormData({ name: person.name || "", tell: person.tell || "" });
+        setFormData(formFromRecord(formFields, person));
         setShowModal(true);
     };
 
@@ -173,22 +175,7 @@ function People() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit Person" : "Add New Person"}</h2>
                         <form className="modal-form" onSubmit={handleSavePerson}>
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Full Name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                required
-                            />
-                            <input
-                                type="text"
-                                name="tell"
-                                placeholder="Phone Number"
-                                value={formData.tell}
-                                onChange={handleInputChange}
-                                required
-                            />
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
                                 <button type="submit" className="btn-save">{isEditMode ? "Update" : "Save"}</button>

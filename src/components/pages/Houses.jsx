@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Houses() {
+    const formFields = useTableInfo("houses");
     const [houses, setHouses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,9 +15,7 @@ function Houses() {
     const [editingHouseId, setEditingHouseId] = useState(null);
     const [search, setSearch] = useState("");
 
-    const [formData, setFormData] = useState({
-        house_name: "", owner: "", add_no: ""
-    });
+    const [formData, setFormData] = useState({});
 
     const fetchHouses = () => {
         fetch("http://localhost:5000/houses")
@@ -45,18 +45,14 @@ function Houses() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingHouseId(null);
-        setFormData({ house_name: "", owner: "", add_no: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (house) => {
         setIsEditMode(true);
         setEditingHouseId(house.h_no);
-        setFormData({ 
-            house_name: house.house_name || "", 
-            owner: house.owner || "",
-            add_no: house.add_no || "" 
-        });
+        setFormData(formFromRecord(formFields, house));
         setShowModal(true);
     };
 
@@ -186,30 +182,7 @@ function Houses() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit House" : "Add New House"}</h2>
                         <form className="modal-form" onSubmit={handleSaveHouse}>
-                            <input 
-                                type="text" 
-                                name="house_name" 
-                                placeholder="House Name" 
-                                value={formData.house_name} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="text" 
-                                name="owner" 
-                                placeholder="Owner" 
-                                value={formData.owner} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="number" 
-                                name="add_no" 
-                                placeholder="Address No." 
-                                value={formData.add_no} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
 
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Address() {
+    const formFields = useTableInfo("address");
     const [addresses, setAddresses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,9 +15,7 @@ function Address() {
     const [editingAddressId, setEditingAddressId] = useState(null);
     const [search, setSearch] = useState("");
 
-    const [formData, setFormData] = useState({
-        district: "", village: ""
-    });
+    const [formData, setFormData] = useState({});
 
     const fetchAddresses = () => {
         fetch("http://localhost:5000/address")
@@ -45,17 +45,14 @@ function Address() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingAddressId(null);
-        setFormData({ district: "", village: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (address) => {
         setIsEditMode(true);
         setEditingAddressId(address.add_no);
-        setFormData({ 
-            district: address.district || "", 
-            village: address.village || ""
-        });
+        setFormData(formFromRecord(formFields, address));
         setShowModal(true);
     };
 
@@ -183,22 +180,7 @@ function Address() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit Address" : "Add New Address"}</h2>
                         <form className="modal-form" onSubmit={handleSaveAddress}>
-                            <input 
-                                type="text" 
-                                name="district" 
-                                placeholder="District" 
-                                value={formData.district} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="text" 
-                                name="village" 
-                                placeholder="Village" 
-                                value={formData.village} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
 
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Renting() {
+    const formFields = useTableInfo("renting");
     const [rentingRecords, setRentingRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -11,9 +13,7 @@ function Renting() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [search, setSearch] = useState("");
-    const [formData, setFormData] = useState({
-        app_no: "", customer: "", price: "", rt_date: "", deposit: "", description: ""
-    });
+    const [formData, setFormData] = useState({});
 
     const fetchRenting = () => {
         fetch("http://localhost:5000/renting")
@@ -42,21 +42,14 @@ function Renting() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingId(null);
-        setFormData({ app_no: "", customer: "", price: "", rt_date: "", deposit: "", description: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (record) => {
         setIsEditMode(true);
         setEditingId(record.rt_no);
-        setFormData({
-            app_no: record.app_no || "",
-            customer: record.customer || "",
-            price: record.price || "",
-            rt_date: record.formattedDate || "",
-            deposit: record.deposit || "",
-            description: record.description || ""
-        });
+        setFormData(formFromRecord(formFields, { ...record, rt_date: record.formattedDate || record.rt_date }));
         setShowModal(true);
     };
 
@@ -174,12 +167,7 @@ function Renting() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit Renting Record" : "Add New Renting Record"}</h2>
                         <form className="modal-form" onSubmit={handleSave}>
-                            <input type="number" name="app_no" placeholder="Apartment No." value={formData.app_no} onChange={handleInputChange} required />
-                            <input type="number" name="customer" placeholder="Customer (Person No.)" value={formData.customer} onChange={handleInputChange} required />
-                            <input type="number" step="0.01" name="price" placeholder="Monthly Price" value={formData.price} onChange={handleInputChange} required />
-                            <input type="date" name="rt_date" value={formData.rt_date} onChange={handleInputChange} required />
-                            <input type="number" step="0.01" name="deposit" placeholder="Deposit" value={formData.deposit} onChange={handleInputChange} required />
-                            <textarea name="description" placeholder="Description" value={formData.description} onChange={handleInputChange} rows="3"></textarea>
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
                                 <button type="submit" className="btn-save">{isEditMode ? "Update" : "Save"}</button>

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css";
 import { SearchBar, ExportImportMenu, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Receipts() {
+    const formFields = useTableInfo("receipts");
     const [receipts, setReceipts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -11,7 +13,7 @@ function Receipts() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [search, setSearch] = useState("");
-    const [formData, setFormData] = useState({ p_no: "", acc_no: "", rt_date: "" });
+    const [formData, setFormData] = useState({});
 
     const fetchReceipts = () => {
         fetch("http://localhost:5000/receipts")
@@ -40,14 +42,14 @@ function Receipts() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingId(null);
-        setFormData({ p_no: "", acc_no: "", rt_date: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (record) => {
         setIsEditMode(true);
         setEditingId(record.r_no);
-        setFormData({ p_no: record.p_no || "", acc_no: record.acc_no || "", rt_date: record.formattedDate || "" });
+        setFormData(formFromRecord(formFields, { ...record, rt_date: record.formattedDate || record.rt_date }));
         setShowModal(true);
     };
 
@@ -159,9 +161,7 @@ function Receipts() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit Receipt" : "Add New Receipt"}</h2>
                         <form className="modal-form" onSubmit={handleSave}>
-                            <input type="number" name="p_no" placeholder="Person No." value={formData.p_no} onChange={handleInputChange} required />
-                            <input type="number" name="acc_no" placeholder="Account No." value={formData.acc_no} onChange={handleInputChange} required />
-                            <input type="date" name="rt_date" value={formData.rt_date} onChange={handleInputChange} required />
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
                                 <button type="submit" className="btn-save">{isEditMode ? "Update" : "Save"}</button>

@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import "../css/Apartments.css"; // Reuse the same CSS for the table and modal layout
 import { SearchBar, ExportImportMenu, RowAvatar, RowActions } from "../Common.jsx";
 import { exportToCSV, parseCSV } from "../csvUtils.js";
+import { Register, useTableInfo, emptyFormFromFields, formFromRecord } from "../Register.jsx";
 
 function Accounts() {
+    const formFields = useTableInfo("accounts");
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,9 +15,7 @@ function Accounts() {
     const [editingAccountId, setEditingAccountId] = useState(null);
     const [search, setSearch] = useState("");
 
-    const [formData, setFormData] = useState({
-        acc_name: "", institution: "", balance: ""
-    });
+    const [formData, setFormData] = useState({});
 
     const fetchAccounts = () => {
         fetch("http://localhost:5000/accounts")
@@ -45,18 +45,14 @@ function Accounts() {
     const handleOpenAddModal = () => {
         setIsEditMode(false);
         setEditingAccountId(null);
-        setFormData({ acc_name: "", institution: "", balance: "" });
+        setFormData(emptyFormFromFields(formFields));
         setShowModal(true);
     };
 
     const handleOpenEditModal = (account) => {
         setIsEditMode(true);
         setEditingAccountId(account.acc_no);
-        setFormData({ 
-            acc_name: account.acc_name || "", 
-            institution: account.institution || "",
-            balance: account.balance || "" 
-        });
+        setFormData(formFromRecord(formFields, account));
         setShowModal(true);
     };
 
@@ -189,31 +185,7 @@ function Accounts() {
                     <div className="modal-content">
                         <h2>{isEditMode ? "Edit Account" : "Add New Account"}</h2>
                         <form className="modal-form" onSubmit={handleSaveAccount}>
-                            <input 
-                                type="text" 
-                                name="acc_name" 
-                                placeholder="Account Name" 
-                                value={formData.acc_name} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="text" 
-                                name="institution" 
-                                placeholder="Institution (e.g., Bank)" 
-                                value={formData.institution} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
-                            <input 
-                                type="number"
-                                step="0.01" 
-                                name="balance" 
-                                placeholder="Balance" 
-                                value={formData.balance} 
-                                onChange={handleInputChange} 
-                                required 
-                            />
+                            <Register formFields={formFields} formData={formData} onChange={handleInputChange} />
 
                             <div className="modal-actions">
                                 <button type="button" className="btn-cancel" onClick={() => setShowModal(false)}>Cancel</button>
