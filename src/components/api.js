@@ -1,19 +1,6 @@
 const BASE = "http://localhost:5000";
 
-/**
- * One common fetch for the whole app.
- *
- * Data CRUD:
- *   fetchData("people")
- *   fetchData("people", { method: "POST", body })
- *   fetchData("people", { method: "PUT", id, body })
- *   fetchData("people", { method: "DELETE", id })
- *
- * Other routes (path starts with /):
- *   fetchData("/tables", { method: "POST", body: { tablename } })
- *   fetchData("/login", { method: "POST", body })
- *   fetchData("/dashboard/stats")
- */
+
 export async function fetchData(tableOrPath, { method = "GET", id, body } = {}) {
   let url;
   if (typeof tableOrPath === "string" && tableOrPath.startsWith("/")) {
