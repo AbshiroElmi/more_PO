@@ -113,11 +113,16 @@ function Receipts() {
                 <table className="apt-table">
                     <thead>
                         <tr>
-                            <th>Receipt No.</th>
-                            <th>Person No.</th>
-                            <th>Account No.</th>
-                            <th>Date</th>
-                            <th style={{ textAlign: "center" }}>Actions</th>
+                            {filteredReceipts.length > 0 &&
+                                Object.keys(filteredReceipts[0])
+                                    .filter((key) => key !== "formattedDate")
+                                    .map((key) => (
+                                        <th key={key}>
+                                            {key.replace(/_/g, " ").toUpperCase()}
+                                        </th>
+                                    ))
+                            }
+                            {filteredReceipts.length > 0 && <th style={{ textAlign: "center" }}>Actions</th>}
                         </tr>
                     </thead>
                     <tbody>

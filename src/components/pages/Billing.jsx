@@ -112,7 +112,7 @@ function Billing() {
     const filteredBilling = !q ? billingRecords : billingRecords.filter((item) =>
         Object.values(item).some((v) => String(v ?? "").toLowerCase().includes(q))
     );
-
+     console.log(filteredBilling);
     return (
         <div className="apartments-page">
             <div className="apartments-header">
@@ -129,22 +129,33 @@ function Billing() {
                 <table className="apt-table">
                     <thead>
                         <tr>
-                            <th>Bill No.</th>
-                            <th>Renting No.</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th style={{ textAlign: 'center' }}>Actions</th>
+                            {filteredBilling.length > 0 &&
+                                Object.keys(filteredBilling[0])
+                                    .filter((key) => key !== "formattedDate")
+                                    .map((key) => (
+                                        <th key={key}>
+                                            {key.replace(/_/g, " ").toUpperCase()}
+                                        </th>
+                                    ))
+                            }
+                            {filteredBilling.length > 0 && <th style={{ textAlign: 'center' }}>Actions</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {filteredBilling.map((record) => (
                             <tr key={record.bl_no}>
-                                <td className="col-no">{record.bl_no}</td>
-                                <td>{record.rt_no}</td>
-                                <td>${Number(record.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                <td>{record.formattedDate}</td>
-                                <td>{record.description}</td>
+                                {Object.keys(record)
+                                    .filter((key) => key !== "formattedDate")
+                                    .map((key) => (
+                                        <td key={key} className={key === "bl_no" ? "col-no" : undefined}>
+                                            {key === "amount"
+                                                ? `$${Number(record[key]).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                                                : key === "bt_date"
+                                                ? record.formattedDate
+                                                : record[key]}
+                                        </td>
+                                    ))
+                                }
                                 <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                                     <RowActions
                                         onEdit={() => handleOpenEditModal(record)}

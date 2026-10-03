@@ -120,9 +120,13 @@ function People() {
                 <table className="apt-table">
                     <thead>
                         <tr>
-                            <th>Person No.</th>
-                            <th>Name</th>
-                            <th>Phone</th>
+                            {filteredPeople.length > 0 &&
+                                Object.keys(filteredPeople[0]).map((key) => (
+                                    <th key={key}>
+                                        {key.replace(/_/g, " ").toUpperCase()}
+                                    </th>
+                                ))
+                            }
                             <th style={{ textAlign: "center" }}>Actions</th>
                         </tr>
                     </thead>

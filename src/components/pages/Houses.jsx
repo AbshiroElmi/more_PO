@@ -123,10 +123,13 @@ function Houses() {
                 <table className="apt-table">
                     <thead>
                         <tr>
-                            <th>House No.</th>
-                            <th>House Name</th>
-                            <th>Owner</th>
-                            <th>Address No.</th>
+                            {filteredHouses.length > 0 &&
+                                Object.keys(filteredHouses[0]).map((key) => (
+                                    <th key={key}>
+                                        {key.replace(/_/g, " ").toUpperCase()}
+                                    </th>
+                                ))
+                            }
                             <th style={{ textAlign: 'center' }}>Actions</th>
                         </tr>
                     </thead>

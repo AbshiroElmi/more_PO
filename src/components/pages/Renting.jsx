@@ -113,14 +113,16 @@ function Renting() {
                 <table className="apt-table">
                     <thead>
                         <tr>
-                            <th>Rent No.</th>
-                            <th>Apt No.</th>
-                            <th>Customer</th>
-                            <th>Price</th>
-                            <th>Date</th>
-                            <th>Deposit</th>
-                            <th>Description</th>
-                            <th style={{ textAlign: "center" }}>Actions</th>
+                            {filteredRenting.length > 0 &&
+                                Object.keys(filteredRenting[0])
+                                    .filter((key) => key !== "formattedDate")
+                                    .map((key) => (
+                                        <th key={key}>
+                                            {key.replace(/_/g, " ").toUpperCase()}
+                                        </th>
+                                    ))
+                            }
+                            {filteredRenting.length > 0 && <th style={{ textAlign: "center" }}>Actions</th>}
                         </tr>
                     </thead>
                     <tbody>

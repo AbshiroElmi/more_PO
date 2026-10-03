@@ -123,9 +123,13 @@ function Address() {
                 <table className="apt-table">
                     <thead>
                         <tr>
-                            <th>Address No.</th>
-                            <th>District</th>
-                            <th>Village</th>
+                            {filteredAddresses.length > 0 &&
+                                Object.keys(filteredAddresses[0]).map((key) => (
+                                    <th key={key}>
+                                        {key.replace(/_/g, " ").toUpperCase()}
+                                    </th>
+                                ))
+                            }
                             <th style={{ textAlign: 'center' }}>Actions</th>
                         </tr>
                     </thead>

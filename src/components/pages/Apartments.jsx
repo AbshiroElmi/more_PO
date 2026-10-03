@@ -123,16 +123,16 @@ function Apartments() {
             <div className="table-wrapper">
                 <table className="apt-table">
                     <thead>
-                    <tr>
-        {apartments.length > 0 &&
-            Object.keys(apartments[0]).map((key) => (
-                <th key={key}>
-                    {key.replace(/_/g, " ").toUpperCase()}
-                </th>
-            ))
-        }
-        {apartments.length > 0 && <th style={{ textAlign: 'center' }}>Actions</th>}
-    </tr>
+                        <tr>
+                            {apartments.length > 0 &&
+                                Object.keys(apartments[0]).map((key) => (
+                                    <th key={key}>
+                                        {key.replace(/_/g, " ").toUpperCase()}
+                                    </th>
+                                ))
+                            }
+                            {apartments.length > 0 && <th style={{ textAlign: 'center' }}>Actions</th>}
+                        </tr>
                     </thead>
                     <tbody>
                         {filteredApartments.map((apt, index) => (
