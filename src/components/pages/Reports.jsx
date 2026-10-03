@@ -169,14 +169,42 @@ function Reports() {
 
     return (
         <div className="apartments-page">
+            {/* Header visible on screen */}
             <div className="apartments-header">
-                <h1>
-                    Reports
-                </h1>
+                <h1>Reports</h1>
                 <SearchBar value={search} onChange={setSearch} placeholder={`Search ${active.label.toLowerCase()}...`} />
                 <span className="apartments-count">{rows.length} records</span>
                 <div className="header-actions">
+                    <button className="btn-print" onClick={() => window.print()}>
+                        <svg
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{ width: 16, height: 16 }}
+                        >
+                            <path d="M5 7V3h10v4M5 14H3a1 1 0 01-1-1V9a1 1 0 011-1h14a1 1 0 011 1v4a1 1 0 01-1 1h-2" />
+                            <path d="M5 11h10v6H5z" />
+                        </svg>
+                        Print Report
+                    </button>
                     <ExportImportMenu onExport={handleExportActive} />
+                </div>
+            </div>
+
+            {/* Print-only formal report header */}
+            <div className="print-only report-print-header">
+                <div className="report-print-top">
+                    <div>
+                        <h1 className="report-print-system">RentalPro Management</h1>
+                        <h2 className="report-print-title">{active.label} Report</h2>
+                    </div>
+                    <div className="report-print-info">
+                        <div><strong>Date:</strong> {new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</div>
+                        <div><strong>Records:</strong> {rows.length}</div>
+                    </div>
                 </div>
             </div>
 
@@ -227,6 +255,8 @@ function Reports() {
                     </table>
                 )}
             </div>
+
+
         </div>
     );
 }

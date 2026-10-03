@@ -39,6 +39,29 @@
     box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
 }
 
+/* ─── Print Button ───────────────────────────────────────────── */
+.btn-print {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #fff;
+    color: #166534;
+    border: 1.5px solid #bbf7d0;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.btn-print:hover {
+    background: #f0fdf4;
+    border-color: #16a34a;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
+}
+
 /* ─── Report State (loading / error) ─────────────────────────── */
 .report-state {
     padding: 40px 20px;
@@ -50,4 +73,162 @@
 
 .report-state--error {
     color: #dc2626;
+}
+
+/* ─── Hidden on screen, visible only when printing ───────────── */
+.print-only {
+    display: none;
+}
+
+/* ─── Print Media Styles ─────────────────────────────────────── */
+@media print {
+    @page {
+        size: auto;
+        margin: 15mm 12mm 15mm 12mm;
+    }
+
+    body, html {
+        background: #fff !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 11pt !important;
+    }
+
+    /* Hide non-printable app chrome */
+    .sidebar,
+    .apartments-header,
+    .report-tabs,
+    .header-actions,
+    .search-box,
+    .btn-print,
+    .btn-menu,
+    .menu-dropdown,
+    .menu-backdrop,
+    .dash-topbar,
+    .footer {
+        display: none !important;
+    }
+
+    /* Reset layout margins for full width print */
+    div[style*="margin-left"],
+    div[style*="marginLeft"],
+    div[style*="calc(100% - 220px)"] {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .apartments-page {
+        padding: 0 !important;
+        background: transparent !important;
+        min-height: auto !important;
+    }
+
+    /* Show Print Header & Footer */
+    .print-only {
+        display: block !important;
+    }
+
+    .report-print-header {
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #166534;
+    }
+
+    .report-print-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .report-print-system {
+        font-size: 20pt;
+        font-weight: 700;
+        color: #14532d;
+        margin: 0 0 4px 0;
+        letter-spacing: -0.5px;
+    }
+
+    .report-print-title {
+        font-size: 14pt;
+        font-weight: 600;
+        color: #334155;
+        margin: 0;
+    }
+
+    .report-print-info {
+        text-align: right;
+        font-size: 9.5pt;
+        color: #475569;
+        line-height: 1.5;
+    }
+
+    /* Table styling for paper */
+    .table-wrapper {
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
+        background: transparent !important;
+    }
+
+    .apt-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9.5pt !important;
+    }
+
+    .apt-table th {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+        padding: 8px 10px !important;
+        font-weight: 700 !important;
+        text-align: left !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .apt-table td {
+        border: 1px solid #e2e8f0 !important;
+        padding: 7px 10px !important;
+        color: #1e293b !important;
+        page-break-inside: avoid !important;
+    }
+
+    .apt-table tr:nth-child(even) td {
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .h-badge, .stat-pill {
+        border: 1px solid #cbd5e1 !important;
+        background: transparent !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        font-size: 8.5pt !important;
+    }
+
+    /* Signature lines in footer */
+    .report-print-footer {
+        margin-top: 50px;
+        page-break-inside: avoid !important;
+    }
+
+    .print-footer-signature {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 40px;
+    }
+
+    .sig-line {
+        border-top: 1.5px solid #64748b;
+        width: 180px;
+        text-align: center;
+        padding-top: 8px;
+        font-size: 9pt;
+        color: #475569;
+        font-weight: 600;
+    }
 }
